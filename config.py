@@ -5,4 +5,3 @@ env = dict(
 	password = '',
 	db = 'mydb',
 )
-

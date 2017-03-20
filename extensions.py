@@ -6,3 +6,4 @@ def db_connect():
 	db = conn[config.env['db']]
 	return db
 
+db = db_connect()

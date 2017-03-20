@@ -1,35 +1,44 @@
 from flask import *
-from extensions import db_connect
+from extensions import db
+
+from pyArango.collection import Collection, Field, Edges
+from pyArango.graph import Graph, EdgeDefinition
+
+import os
+import json
+
+class Voxels(Collection):
+	_fields = {
+		"id": Field()
+	}
+
+class Link(Edges):
+	_fields = {
+		"id": Field()
+	}
+
+class BrainGraph(Graph):
+	_edgeDefinitions = (EdgeDefinition("Link", fromCollections=["Voxels"], toCollections=["Voxels"]), )
+	_orphanedCollections = []
+
 
 main = Blueprint('main', __name__, template_folder='templates')
-
 @main.route('/')
 def main_route():
-	db = db_connect()
+	db.createCollection("Voxels")
+	db.createCollection("Link")
+	voxelsGraph = db.createGraph("BrainGraph")
 
-	# Delete the Users collection if already exists
-	if db.hasCollection("Users"):
-		db["Users"].delete()
-		db.reloadCollections()
+	with open(os.path.abspath('data/pos01.json'), 'r') as edgelist:
+		data = json.load(edgelist)
 
-	# Create the Users collection
-	usersCollection = db.createCollection(name="Users")
+		voxels_dict = {}
+		for node in data['nodes']:
+			idx = node["id"]
+			voxels_dict[idx] = voxelsGraph.createVertex('Voxels', {"id": node["label"]})
 
-	# Create 10 documents in collection
-	for i in range(10):
-		doc = usersCollection.createDocument()
-		doc["name"] = "Doc_%d" % i
-		doc._key = "doc_%d" % i
-		doc.save()
-	print_list = []
-
-	# Append fetched documents to print_list
-	for doc in usersCollection.fetchAll():
-		print_list.append(doc._key + '<br/>')
-
-	# Remove all documents through an AQL query
-	aql = "FOR x IN @@collection REMOVE x IN @@collection"
-	db.AQLQuery(aql, bindVars={'@collection': 'Users'})
-
-	return "\n".join(print_list)
-
+		for edge in data['edges']:
+			src = voxels_dict[edge["source"]]
+			dest = voxels_dict[edge["target"]]
+			voxelsGraph.link('Link', src, dest, {"id": edge["id"][1:]})
+	return jsonify(data)

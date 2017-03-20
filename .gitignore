@@ -1,4 +1,6 @@
+data/
+node_modules/
 venv/
 *.pyc
+.env
 .DS_Store
-
