@@ -29,16 +29,21 @@ def main_route():
 	db.createCollection("Link")
 	voxelsGraph = db.createGraph("BrainGraph")
 
-	with open(os.path.abspath('data/pos01.json'), 'r') as edgelist:
-		data = json.load(edgelist)
+	datadir = 'data/'
+	voxels_dict = {}
+	iter = 0
+	for fname in os.listdir(datadir):
+		with open(os.path.abspath(datadir + fname), 'r') as edgelist:
+			data = json.load(edgelist)
 
-		voxels_dict = {}
-		for node in data['nodes']:
-			idx = node["id"]
-			voxels_dict[idx] = voxelsGraph.createVertex('Voxels', {"id": node["label"]})
+			if iter == 0:
+				for node in data['nodes']:
+					idx = node["id"]
+					voxels_dict[idx] = voxelsGraph.createVertex('Voxels', {"id": node["label"]})
 
-		for edge in data['edges']:
-			src = voxels_dict[edge["source"]]
-			dest = voxels_dict[edge["target"]]
-			voxelsGraph.link('Link', src, dest, {"id": edge["id"][1:]})
-	return jsonify(data)
+			for edge in data['edges']:
+				src = voxels_dict[edge["source"]]._id
+				dest = voxels_dict[edge["target"]]._id
+				voxelsGraph.createEdge('Link', src, dest, {"timestep": iter, "id": edge["id"][1:]})
+		iter += 1
+	return ('', 204)
