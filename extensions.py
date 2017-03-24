@@ -1,9 +1,9 @@
-from pyArango.connection import *
+from arango import ArangoClient
 import config
 
 def db_connect():
-	conn = Connection(username=config.env['user'], password=config.env['password'])
-	db = conn[config.env['db']]
+	client = ArangoClient(username=config.env['username'], password=config.env['password'])
+	db = client.db(config.env['db'])
 	return db
 
 db = db_connect()
