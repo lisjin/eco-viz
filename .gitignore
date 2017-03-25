@@ -1,6 +1,7 @@
 data/
 node_modules/
 venv/
+*.json
 *.pyc
 .env
 .DS_Store

@@ -9,7 +9,7 @@ NODES_PREF=nodes0
 LINKS_PREF=links0
 GRAPHS_PREF=graphs0
 
-for f in $FILES
+for f in `ls $FILES | sort`
 do
   if [[ $f =~ "nodes" ]]  # This is a node JSON file
   then
