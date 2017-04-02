@@ -9,6 +9,8 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
+	<link rel="shortcut icon" href="/favicon.ico">
+
 	<!-- Mobile Specific Metas
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -24,14 +26,19 @@
 		.vega-actions {
 			display: none;
 		}
+		.subtext {
+			color: grey;
+			font-style: italic;
+			font-size: 0.75em;
+		}
 	</style>
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.7.3/d3.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
-	<script src="https://vega.github.io/vega-embed/vega-embed.min.js"></script>
+	<script src="https://vega.github.io/vega-embed/vega-embed.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
 </head>
 <body>
 
@@ -39,24 +46,64 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <div class="container">
 	<div class="row" style="margin-top: 10%">
-		<div>
-			<h5>Frequency of summary items by structure type</h5>
+		<div class="two columns">
+			<label for="tc-input-thresh">Threshold</label>
+			<select class="u-full-width" id="tc-input-thresh">
+				<option value="0.3">0.3</option>
+				<option value="0.45">0.45</option>
+			</select>
+		</div>
+		<div class="two columns">
+			<label for="tc-input-tstep"># of time steps</label>
+			<select class="u-full-width" id="tc-input-tstep">
+				<option value="12">12</option>
+				<option value="16">16</option>
+				<option value="24">24</option>
+			</select>
+		</div>
+	</div>
+	<div class="row">
+		<div class="one-half column">
+			<h5>Frequency of summary items <span class="subtext">by structure type</span></h5>
 			<div id="view1"></div>
+		</div>
+		<div class="one-half column">
+			<h5>Frequency of nodes <span class="subtext">by structure participation count</span></h5>
+			<div id="view2"></div>
 		</div>
 	</div>
 	<br>
-	<div class="row">
-		<h5>Structure participation by node ID</h5>
-		<div id="view2"></div>
-	</div>
+	
 </div>
 
 <script type="text/javascript">
-	var spec1 = "static/spec_v1.json";
-	vega.embed('#view1', spec1);
+	function updateEmbed(spec_v1_url, spec_v2_url) {
+		$.getJSON('static/spec_v1.json', function(spec) {
+			spec.data[0].url = spec_v1_url;
+			vega.embed('#view1', spec);
+		});
+		$.getJSON('static/spec_v2.json', function(spec) {
+			spec.data[0].url = spec_v2_url;
+			vega.embed('#view2', spec);
+		});
+	}
 
-	var spec2 = "static/spec_v2.json";
-	vega.embed('#view2', spec2);
+	function tcInputListener() {
+		var thresh = $('#tc-input-thresh').find('option:selected')[0].value;
+		var tstep = $('#tc-input-tstep').find('option:selected')[0].value;
+
+		var pref = 'data/pos_' + thresh + '-' + tstep + '.json'
+		var spec_v1_url = pref + '?type=struc_distr'
+		var spec_v2_url = pref + '?type=node_distr'
+
+		updateEmbed(spec_v1_url, spec_v2_url);
+	}
+
+	vega.embed('#view1', 'static/spec_v1.json');
+	vega.embed('#view2', 'static/spec_v2.json');
+
+	$('#tc-input-thresh').change(tcInputListener);
+	$('#tc-input-tstep').change(tcInputListener);
 </script>
 
 <!-- End Document
