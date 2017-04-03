@@ -23,6 +23,9 @@
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet" type="text/css">
 	<style>
+		.header {
+			margin-top: 10%;
+		}
 		.vega-actions {
 			display: none;
 		}
@@ -31,25 +34,39 @@
 			font-style: italic;
 			font-size: 0.75em;
 		}
+		.cut-col {
+			max-width: 415px;
+			word-wrap: break-word;
+		}
+		#tc-table-data td span:not(:last-of-type)::after {
+			content: ", ";
+		}
 	</style>
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
-	<script src="https://vega.github.io/vega-embed/vega-embed.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
+	<script src="//vega.github.io/vega-embed/vega-embed.js"></script>
+
+	<script src="static/js/index.js"></script>
 </head>
 <body>
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <div class="container">
-	<div class="row" style="margin-top: 10%">
+	<div class="header">
+		<h2>TimeCrunch Viz</h2>
+	</div>
+	<div class="row">
 		<div class="two columns">
 			<label for="tc-input-thresh">Threshold</label>
 			<select class="u-full-width" id="tc-input-thresh">
-				<option value="0.3">0.3</option>
+				<option value="0.30">0.30</option>
 				<option value="0.45">0.45</option>
 			</select>
 		</div>
@@ -73,38 +90,33 @@
 		</div>
 	</div>
 	<br>
-	
+	<div class="row">
+		<h5>Full TimeCrunch output</h5>
+		<table class="u-full-width" id="tc-table">
+			<thead>
+				<tr>
+					<th>Structure</th>
+					<th>Nodes</th>
+					<th>Time step(s)</th>
+				</tr>
+			</thead>
+		</table>
+	</div>
+	<br>
 </div>
-
-<script type="text/javascript">
-	function updateEmbed(spec_v1_url, spec_v2_url) {
-		$.getJSON('static/spec_v1.json', function(spec) {
-			spec.data[0].url = spec_v1_url;
-			vega.embed('#view1', spec);
-		});
-		$.getJSON('static/spec_v2.json', function(spec) {
-			spec.data[0].url = spec_v2_url;
-			vega.embed('#view2', spec);
-		});
-	}
-
-	function tcInputListener() {
-		var thresh = $('#tc-input-thresh').find('option:selected')[0].value;
-		var tstep = $('#tc-input-tstep').find('option:selected')[0].value;
-
-		var pref = 'data/pos_' + thresh + '-' + tstep + '.json'
-		var spec_v1_url = pref + '?type=struc_distr'
-		var spec_v2_url = pref + '?type=node_distr'
-
-		updateEmbed(spec_v1_url, spec_v2_url);
-	}
-
-	vega.embed('#view1', 'static/spec_v1.json');
-	vega.embed('#view2', 'static/spec_v2.json');
-
-	$('#tc-input-thresh').change(tcInputListener);
-	$('#tc-input-tstep').change(tcInputListener);
+{% raw %}
+<script type="x-tmpl-mustache" id="tc-table-template">
+	<tbody id="tc-table-data">
+		{{#strucs}}
+		<tr>
+			<td>{{struc}}</td>
+			<td class="cut-col">{{#nodes}}<span>{{.}}</span>{{/nodes}}</td>
+			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
+		</tr>
+		{{/strucs}}
+	</tbody>
 </script>
+{% endraw %}
 
 <!-- End Document
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->

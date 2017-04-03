@@ -49,7 +49,7 @@ def send_data(path):
 	elif req_type == 'node_distr':
 		nodes_flat = get_nodes(path, entry)
 		return json.dumps(sorted(nodes_flat, key=lambda k: k['category']))
-	abort(404)
+	return json.dumps(entry)
 
 
 @main.route('/static/<path:path>')
