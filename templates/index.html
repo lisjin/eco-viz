@@ -34,10 +34,6 @@
 			font-style: italic;
 			font-size: 0.75em;
 		}
-		.cut-col {
-			max-width: 415px;
-			word-wrap: break-word;
-		}
 		#tc-table-data td span:not(:last-of-type)::after {
 			content: ", ";
 		}
@@ -79,6 +75,7 @@
 			</select>
 		</div>
 	</div>
+	<br>
 	<div class="row">
 		<div class="one-half column">
 			<h5>Frequency of summary items <span class="subtext">by structure type</span></h5>
@@ -91,13 +88,14 @@
 	</div>
 	<br>
 	<div class="row">
-		<h5>Full TimeCrunch output</h5>
-		<table class="u-full-width" id="tc-table">
+		<h5>Full TimeCrunch summary</h5>
+		<table class="two-thirds column" id="tc-table">
 			<thead>
 				<tr>
 					<th>Structure</th>
-					<th>Nodes</th>
 					<th>Time step(s)</th>
+					<th># labeled / total nodes</th>
+					<th>Cross entropy</th>
 				</tr>
 			</thead>
 		</table>
@@ -110,8 +108,9 @@
 		{{#strucs}}
 		<tr>
 			<td>{{struc}}</td>
-			<td class="cut-col">{{#nodes}}<span>{{.}}</span>{{/nodes}}</td>
 			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
+			<td>{{num_comps}} / {{num_nodes}}</td>
+			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
 		</tr>
 		{{/strucs}}
 	</tbody>

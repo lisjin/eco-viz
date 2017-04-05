@@ -13,7 +13,9 @@ function updateTable(data_url) {
 	$.getJSON(data_url, function(data) {
 		var output = $('#tc-table');
 		var template = $('#tc-table-template').html()
-		var test_out = Mustache.render(template, {"strucs": data});
+		var test_out = Mustache.render(template, {"strucs": data, toFixed: function() {
+			return function(num, render) { return parseFloat(render(num)).toFixed(4); }
+		}});
 		$('#tc-table-data').remove();
 		$('#tc-table').append(test_out);
 	});
