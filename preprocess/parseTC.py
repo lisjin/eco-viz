@@ -11,7 +11,12 @@ def calc_cross_entropy(comp_dict_cur, comp_dict_counts):
 
 	cross_entropy = float(0)
 	for k, v in comp_dict_counts.iteritems():
-		cross_entropy += (v / total_orig) * math.log(comp_dict_counts[k] / total_cur)
+		if k in comp_dict_cur:
+			p = v / total_orig
+			q = comp_dict_cur[k] / total_cur
+			assert(p <= 1)
+			assert(q <= 1)
+			cross_entropy += (p) * math.log(q)
 	return -1 * cross_entropy
 
 
