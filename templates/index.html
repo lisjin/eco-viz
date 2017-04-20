@@ -34,8 +34,13 @@
 			font-style: italic;
 			font-size: 0.75em;
 		}
-		#tc-table-data td span:not(:last-of-type)::after {
+		table td span:not(:last-of-type)::after {
 			content: ", ";
+		}
+		.table-wrapper {
+			max-height: 600px;
+			overflow-y: scroll;
+			margin-left: 2%;
 		}
 	</style>
 
@@ -78,33 +83,79 @@
 	<br>
 	<div class="row">
 		<div class="one-half column">
-			<h5>Frequency of summary items <span class="subtext">by structure type</span></h5>
+			<h4>Rest</h4>
+		</div>
+		<div class="one-half column">
+			<h4>Mindful Rest</h4>
+		</div>
+	</div>
+	<div class="row">
+		<h5>Frequency of summary items <span class="subtext">by structure type</span></h5>
+	</div>
+	<div class="row">
+		<div class="one-half column">
 			<div id="view1"></div>
 		</div>
 		<div class="one-half column">
-			<h5>Frequency of nodes <span class="subtext">by structure participation count</span></h5>
+			<div id="view3"></div>
+		</div>
+	</div>
+	<div class="row">
+		<h5>Frequency of nodes <span class="subtext">by structure participation count</span></h5>
+	</div>
+	<div class="row">
+		<div class="one-half column">
 			<div id="view2"></div>
+		</div>
+		<div class="one-half column">
+			<div id="view4"></div>
 		</div>
 	</div>
 	<br>
 	<div class="row">
 		<h5>Full TimeCrunch summary</h5>
-		<table class="two-thirds column" id="tc-table">
-			<thead>
-				<tr>
-					<th>Structure</th>
-					<th>Time step(s)</th>
-					<th># labeled / total nodes</th>
-					<th>Cross entropy</th>
-				</tr>
-			</thead>
-		</table>
+		<div class="table-wrapper one-half column">
+			<table id="tc-table">
+				<thead>
+					<tr>
+						<th>Structure</th>
+						<th>Time step(s)</th>
+						<th># lab. / tot.</th>
+						<th>Cross entropy</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+		<div class="table-wrapper one-half column">
+			<table id="tc-table2">
+				<thead>
+					<tr>
+						<th>Structure</th>
+						<th>Time step(s)</th>
+						<th># lab. / tot.</th>
+						<th>Cross entropy</th>
+					</tr>
+				</thead>
+			</table>
+		</div>
 	</div>
 	<br>
 </div>
 {% raw %}
 <script type="x-tmpl-mustache" id="tc-table-template">
 	<tbody id="tc-table-data">
+		{{#strucs}}
+		<tr>
+			<td>{{struc}}</td>
+			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
+			<td>{{num_comps}} / {{num_nodes}}</td>
+			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
+		</tr>
+		{{/strucs}}
+	</tbody>
+</script>
+<script type="x-tmpl-mustache" id="tc-table2-template">
+	<tbody id="tc-table2-data">
 		{{#strucs}}
 		<tr>
 			<td>{{struc}}</td>
