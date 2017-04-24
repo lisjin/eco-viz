@@ -100,6 +100,7 @@
 			<div id="view3"></div>
 		</div>
 	</div>
+	<br>
 	<div class="row">
 		<h5>Frequency of nodes <span class="subtext">by structure participation count</span></h5>
 	</div>
@@ -121,7 +122,7 @@
 						<th>Structure</th>
 						<th>Time step(s)</th>
 						<th># lab. / tot.</th>
-						<th>Cross entropy</th>
+						<th>Entropy</th>
 					</tr>
 				</thead>
 			</table>
@@ -133,7 +134,7 @@
 						<th>Structure</th>
 						<th>Time step(s)</th>
 						<th># lab. / tot.</th>
-						<th>Cross entropy</th>
+						<th>Entropy</th>
 					</tr>
 				</thead>
 			</table>
@@ -149,7 +150,7 @@
 			<td>{{struc}}</td>
 			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
 			<td>{{num_comps}} / {{num_nodes}}</td>
-			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
+			<td>{{#toFixed}}{{entropy}}{{/toFixed}}</td>
 		</tr>
 		{{/strucs}}
 	</tbody>
@@ -161,7 +162,7 @@
 			<td>{{struc}}</td>
 			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
 			<td>{{num_comps}} / {{num_nodes}}</td>
-			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
+			<td>{{#toFixed}}{{entropy}}{{/toFixed}}</td>
 		</tr>
 		{{/strucs}}
 	</tbody>
