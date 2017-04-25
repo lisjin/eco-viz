@@ -1,16 +1,9 @@
 #!/bin/bash
 
-DB=mydb
-GRAPHS_PREF=graphs0
+DB=tc-viz
+GRAPH_NAME=MH03_MR-030-12
 
-for i in $(seq 1 $1)
-do
-  arangosh --server.username "root" --server.password "" --server.database "$DB" --quiet << EOF
-    var graph_module = require("@arangodb/general-graph");
-    graph_module._drop("$GRAPHS_PREF$i", true);
+arangosh --server.username "root" --server.password "" --server.database "$DB" --quiet << EOF
+var graph_module = require("@arangodb/general-graph");
+graph_module._drop("$GRAPH_NAME", true);
 EOF
-if [ "$i" -eq "9" ]
-then
-  GRAPHS_PREF=graphs
-fi
-done 
