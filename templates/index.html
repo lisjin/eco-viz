@@ -23,11 +23,15 @@
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet" type="text/css">
 	<style>
-		.header {
-			margin-top: 10%;
+		.container {
+			margin-top: 5%;
+			margin-bottom: 5%;
 		}
 		.vega-actions {
 			display: none;
+		}
+		.center-head {
+			text-align: center;
 		}
 		.subtext {
 			color: grey;
@@ -65,6 +69,12 @@
 	</div>
 	<div class="row">
 		<div class="two columns">
+			<label for="tc-input-subject">Subject</label>
+			<select class="u-full-width" id="tc-input-subject">
+				<option value="MH01">MH01</option>
+			</select>
+		</div>
+		<div class="two columns">
 			<label for="tc-input-thresh">Threshold</label>
 			<select class="u-full-width" id="tc-input-thresh">
 				<option value="0.30">0.30</option>
@@ -83,14 +93,14 @@
 	<br>
 	<div class="row">
 		<div class="one-half column">
-			<h4>Rest</h4>
+			<h4 class="center-head">Rest</h4>
 		</div>
 		<div class="one-half column">
-			<h4>Mindful Rest</h4>
+			<h4 class="center-head">Mindful Rest</h4>
 		</div>
 	</div>
 	<div class="row">
-		<h5>Frequency of summary items <span class="subtext">by structure type</span></h5>
+		<h5 class="center-head">Frequency of summary items <span class="subtext">by structure type</span></h5>
 	</div>
 	<div class="row">
 		<div class="one-half column">
@@ -102,7 +112,7 @@
 	</div>
 	<br>
 	<div class="row">
-		<h5>Frequency of nodes <span class="subtext">by structure participation count</span></h5>
+		<h5 class="center-head">Frequency of nodes <span class="subtext">by structure participation count</span></h5>
 	</div>
 	<div class="row">
 		<div class="one-half column">
@@ -114,7 +124,7 @@
 	</div>
 	<br>
 	<div class="row">
-		<h5>Full TimeCrunch summary</h5>
+		<h5 class="center-head">Full TimeCrunch summary</h5>
 		<div class="table-wrapper one-half column">
 			<table id="tc-table">
 				<thead>
