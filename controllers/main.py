@@ -7,7 +7,7 @@ import json
 main = Blueprint('main', __name__, template_folder='templates')
 
 
-def get_strucs(path, entry):
+def get_strucs(entry):
 	strucs = {}
 	strucs_flat = []
 
@@ -19,7 +19,7 @@ def get_strucs(path, entry):
 	return strucs_flat
 
 
-def get_nodes(path, entry):
+def get_nodes(entry):
 	nodes = {}
 	nodes_flat = []
 	
@@ -44,10 +44,10 @@ def send_data(path):
 	entry = json.load(open(os.path.join(os.path.realpath(os.path.dirname(__file__)), '..', 'data', path)))
 
 	if req_type == 'struc_distr':
-		strucs_flat = get_strucs(path, entry)
+		strucs_flat = get_strucs(entry)
 		return json.dumps(sorted(strucs_flat, key=lambda k: k['amount'], reverse=True))
 	elif req_type == 'node_distr':
-		nodes_flat = get_nodes(path, entry)
+		nodes_flat = get_nodes(entry)
 		return json.dumps(sorted(nodes_flat, key=lambda k: k['category']))
 	return json.dumps(entry)
 
