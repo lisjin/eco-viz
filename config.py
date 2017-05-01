@@ -3,5 +3,5 @@ env = dict(
 	port = 3000,
 	username = 'root',
 	password = '',
-	db = 'mydb',
+	db = 'tc-viz',
 )
