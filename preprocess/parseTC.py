@@ -28,24 +28,26 @@ def parse_line(line, comp_set):
 	return struc, nodes, tsteps, comps
 
 
-def calc_entropy(comp_dict_cur):
+def calc_entropy(comp_dict_cur, comp_dict_counts):
 	"""
 	Args:
 		comp_dict_cur (dict): Current component nodes in form {<struc>: <count>}
 	Returns:
 		Relative entropy (float)
 	"""
+	total_orig = float(sum(comp_dict_counts.values()))
 	total_cur = float(sum(comp_dict_cur.values()))
 
 	entropy = float(0)
 	for k, v in comp_dict_cur.iteritems():
 		# Compute entropy relative to maximum entropy, which is based on # of total outcomes
+		p = v / total_orig
 		q = comp_dict_cur[k] / total_cur
 		entropy += q * math.log(q, NUM_COMPONENTS)
 	return -1 * entropy
 
 
-def get_entropy(comp_dict, comps):
+def get_entropy(comp_dict, comp_dict_counts, comps):
 	"""
 	Args:
 		comp_dict (dict): Original dictionary of component nodes
@@ -58,7 +60,7 @@ def get_entropy(comp_dict, comps):
 		cur_inter = node_set.intersection(comps)
 		if len(cur_inter):
 			comp_dict_cur[region] = len(cur_inter)
-	return calc_entropy(comp_dict_cur)
+	return calc_entropy(comp_dict_cur, comp_dict_counts)
 
 
 def main():
@@ -73,16 +75,17 @@ def main():
 			comp_dict[line.split()[0]] = set(cur_comps)
 			components += cur_comps
 	comp_set = set(components)
+	comp_dict_counts = {k: len(v) for k, v in comp_dict.items()}
 
 	# For each line in TimeCrunch file, parse the structure and store in list
 	patterns = []
 	with io.open(fname, 'r') as infile:	
 		for idx, line in enumerate(infile):
 			struc, nodes, tsteps, comps = parse_line(line, comp_set)
-			entropy = get_entropy(comp_dict, comps)
+			entropy = get_entropy(comp_dict, comp_dict_counts, comps)
 			
 			patterns.append({'struc': struc, 'nodes': nodes,'num_nodes': len(nodes), 'comps': list(comps), 'num_comps': len(comps),
-				'tsteps': tsteps, 'entropy': entropy})
+				'tsteps': tsteps, 'cross_entropy': entropy})
 
 	# Write the populated dictionary of structures to file
 	with io.open(fname.split('_greedy')[0] + '.json', 'w') as outfile:

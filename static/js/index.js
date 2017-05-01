@@ -41,7 +41,6 @@ function tcInputListener() {
 }
 
 $(function() {
-	for (var i = 1; i < 5; ++i) { console.log(i); }
 	vega.embed('#view1', 'static/specs/spec_v1.json');
 	vega.embed('#view2', 'static/specs/spec_v2.json');
 	vega.embed('#view3', 'static/specs/spec_v3.json');

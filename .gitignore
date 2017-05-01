@@ -1,7 +1,7 @@
 data/
 node_modules/
 venv/
-preprocess/*.tmodel
+preprocess/tmodels/
 *.json
 *.pyc
 .env

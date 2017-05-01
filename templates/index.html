@@ -22,7 +22,7 @@
 	<!-- CSS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet" type="text/css">
-	<style>
+	<style type="text/css">
 		.container {
 			margin-top: 5%;
 			margin-bottom: 5%;
@@ -36,7 +36,6 @@
 		.subtext {
 			color: grey;
 			font-style: italic;
-			font-size: 0.75em;
 		}
 		table td span:not(:last-of-type)::after {
 			content: ", ";
@@ -46,7 +45,16 @@
 			overflow-y: scroll;
 			margin-left: 2%;
 		}
+		.table-wrapper th a {
+			cursor: pointer;
+		}
+		.header-upper {
+			text-transform: uppercase;
+			letter-spacing: .2rem;
+			font-weight: 600;
+		}
 	</style>
+	<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/0.2.4/balloon.min.css" rel="stylesheet" type="text/css">
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -110,7 +118,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<h5 class="center-head">Frequency of summary items <span class="subtext">by structure type</span></h5>
+		<h6 class="center-head header-upper">Summary item count <span class="subtext">by structure type</span></h6>
 	</div>
 	<div class="row">
 		<div class="one-half column">
@@ -122,7 +130,7 @@
 	</div>
 	<br>
 	<div class="row">
-		<h5 class="center-head">Frequency of nodes <span class="subtext">by structure participation count</span></h5>
+		<h6 class="center-head header-upper">Node count <span class="subtext">by structure participation count</span></h6>
 	</div>
 	<div class="row">
 		<div class="one-half column">
@@ -133,16 +141,17 @@
 		</div>
 	</div>
 	<br>
+	<br>
 	<div class="row">
-		<h5 class="center-head">Full TimeCrunch summary</h5>
+		<h6 class="center-head header-upper">Full TimeCrunch summary</h6>
 		<div class="table-wrapper one-half column">
 			<table id="tc-table">
 				<thead>
 					<tr>
-						<th>Structure</th>
-						<th>Time step(s)</th>
-						<th># lab. / tot.</th>
-						<th>Entropy</th>
+						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Structure</a></th>
+						<th><a data-balloon="Interval(s) in which structure was present" data-balloon-pos="right">Time step(s)</a></th>
+						<th><a data-balloon="Number labeled out of total nodes" data-balloon-pos="left">Lab./tot.</a></th>
+						<th><a data-balloon="Entropy relative to true labeled node distribution" data-balloon-pos="left">Cross entropy</a></th>
 					</tr>
 				</thead>
 			</table>
@@ -151,10 +160,10 @@
 			<table id="tc-table2">
 				<thead>
 					<tr>
-						<th>Structure</th>
-						<th>Time step(s)</th>
-						<th># lab. / tot.</th>
-						<th>Entropy</th>
+						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Structure</a></th>
+						<th><a data-balloon="Interval(s) in which structure was present" data-balloon-pos="right">Time step(s)</a></th>
+						<th><a data-balloon="Number labeled out of total nodes" data-balloon-pos="left">Lab./tot.</a></th>
+						<th><a data-balloon="Entropy relative to true labeled node distribution" data-balloon-pos="left">Cross entropy</a></th>
 					</tr>
 				</thead>
 			</table>
@@ -169,8 +178,8 @@
 		<tr>
 			<td>{{struc}}</td>
 			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
-			<td>{{num_comps}} / {{num_nodes}}</td>
-			<td>{{#toFixed}}{{entropy}}{{/toFixed}}</td>
+			<td>{{num_comps}}/{{num_nodes}}</td>
+			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
 		</tr>
 		{{/strucs}}
 	</tbody>
@@ -181,8 +190,8 @@
 		<tr>
 			<td>{{struc}}</td>
 			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
-			<td>{{num_comps}} / {{num_nodes}}</td>
-			<td>{{#toFixed}}{{entropy}}{{/toFixed}}</td>
+			<td>{{num_comps}}/{{num_nodes}}</td>
+			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
 		</tr>
 		{{/strucs}}
 	</tbody>

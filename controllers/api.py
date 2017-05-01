@@ -43,6 +43,7 @@ def traverse_route(graph_name):
 
 @api.route('/api/timesteps/<graph_name>')
 def timesteps_route(graph_name):
-	cursor = db.aql.execute('FOR e in %s COLLECT tstep = e.tstep WITH COUNT into counter RETURN {tstep: tstep, num_edges: counter}' % (graph_name + '_edges'))
+	cursor = db.aql.execute('FOR e in %s COLLECT tstep = e.tstep WITH COUNT into counter \
+		RETURN {tstep: tstep, num_edges: counter}' % (graph_name + '_edges'))
 	results = [c for c in cursor]
 	return jsonify(results)
