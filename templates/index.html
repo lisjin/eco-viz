@@ -22,39 +22,8 @@
 	<!-- CSS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet" type="text/css">
-	<style type="text/css">
-		.container {
-			margin-top: 5%;
-			margin-bottom: 5%;
-		}
-		.vega-actions {
-			display: none;
-		}
-		.center-head {
-			text-align: center;
-		}
-		.subtext {
-			color: grey;
-			font-style: italic;
-		}
-		table td span:not(:last-of-type)::after {
-			content: ", ";
-		}
-		.table-wrapper {
-			max-height: 600px;
-			overflow-y: scroll;
-			margin-left: 2%;
-		}
-		.table-wrapper th a {
-			cursor: pointer;
-		}
-		.header-upper {
-			text-transform: uppercase;
-			letter-spacing: .2rem;
-			font-weight: 600;
-		}
-	</style>
 	<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/0.2.4/balloon.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -65,7 +34,7 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
 	<script src="//vega.github.io/vega-embed/vega-embed.js"></script>
 
-	<script src="static/js/index.js"></script>
+	<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
 <body>
 
@@ -171,6 +140,7 @@
 	</div>
 	<br>
 </div>
+
 {% raw %}
 <script type="x-tmpl-mustache" id="tc-table-template">
 	<tbody id="tc-table-data">

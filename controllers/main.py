@@ -50,9 +50,3 @@ def send_data(path):
 		nodes_flat = get_nodes(entry)
 		return json.dumps(sorted(nodes_flat, key=lambda k: k['category']))
 	return json.dumps(entry)
-
-
-@main.route('/static/<path:path>')
-def send_static(path):
-	type = request.args.get('type')
-	return send_from_directory('static', path, mimetype='text/html')
