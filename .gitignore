@@ -2,7 +2,10 @@ data/
 node_modules/
 venv/
 preprocess/tmodels/
+
 *.json
+!static/specs/*.json
 *.pyc
+
 .env
 .DS_Store
