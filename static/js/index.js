@@ -26,13 +26,14 @@ function tcInputListener() {
 	var pref2 = 'data/' + subject + '/' + subject + '_MindfulRest+' + thresh + '-' + tstep + '.json';
 
 	var specs = {
+		0: 'api/timesteps/' + subject + '_R_' + thresh.toString().replace('.', '') + '_' + tstep,
 		1: pref + '?type=struc_distr',
 		2: pref + '?type=node_distr',
 		3: pref2 + '?type=struc_distr',
 		4: pref2 + '?type=node_distr'
 	}
 
-	for (var i = 1; i < 5; ++i) {
+	for (var i = 0; i < 5; ++i) {
 		updateEmbed('static/specs/spec_v' + i.toString() + '.json', specs[i], '#view' + i.toString());
 	}
 
@@ -41,6 +42,7 @@ function tcInputListener() {
 }
 
 $(function() {
+	vega.embed('#view0', 'static/specs/spec_v0.json');
 	vega.embed('#view1', 'static/specs/spec_v1.json');
 	vega.embed('#view2', 'static/specs/spec_v2.json');
 	vega.embed('#view3', 'static/specs/spec_v3.json');

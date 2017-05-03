@@ -2,6 +2,9 @@
 
 for e in *
 do
-	echo "Processing $e"
-	python edge2json.py $e
+	if [[ $e =~ "Rest" ]]
+	then
+		echo "Processing $e"
+		python edge2json.py $e
+	fi
 done
