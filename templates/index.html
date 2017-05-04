@@ -42,7 +42,7 @@
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <div class="container">
 	<div class="header">
-		<h2>TimeCrunch Viz</h2>
+		<h2>TimeCrunch<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo">Viz</h2>
 	</div>
 	<div class="row">
 		<div class="two columns">
@@ -78,10 +78,12 @@
 		</div>
 	</div>
 	<br>
+	<br>
 	<div class="row">
 		<h6 class="centered header-upper">Sparsity <span class="subtext">over time</span></h6>
 		<div class="centered" id="view0"></div>
 	</div>
+	<br>
 	<div class="row">
 		<div class="one-half column">
 			<h4 class="centered">Rest</h4>
@@ -101,6 +103,7 @@
 			<div id="view3"></div>
 		</div>
 	</div>
+	<br>
 	<br>
 	<div class="row">
 		<h6 class="centered header-upper">Node count <span class="subtext">by structure participation count</span></h6>
@@ -123,7 +126,7 @@
 					<tr>
 						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Structure</a></th>
 						<th><a data-balloon="Interval(s) structure was present in" data-balloon-pos="right">Time step(s)</a></th>
-						<th><a data-balloon="Number labeled out of total nodes" data-balloon-pos="left">Lab./tot.</a></th>
+						<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Lab./tot.</a></th>
 						<th><a data-balloon="Entropy relative to true labeled node distribution" data-balloon-pos="left">Cross entropy</a></th>
 					</tr>
 				</thead>
@@ -135,14 +138,13 @@
 					<tr>
 						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Structure</a></th>
 						<th><a data-balloon="Interval(s) structure was present in" data-balloon-pos="right">Time step(s)</a></th>
-						<th><a data-balloon="Number labeled out of total nodes" data-balloon-pos="left">Lab./tot.</a></th>
+						<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Lab./tot.</a></th>
 						<th><a data-balloon="Entropy relative to true labeled node distribution" data-balloon-pos="left">Cross entropy</a></th>
 					</tr>
 				</thead>
 			</table>
 		</div>
 	</div>
-	<br>
 </div>
 
 {% raw %}

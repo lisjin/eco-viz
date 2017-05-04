@@ -35,3 +35,9 @@ table td span:not(:last-of-type)::after {
 	letter-spacing: .2rem;
 	font-weight: 600;
 }
+
+.logo {
+	width: 40px;
+	padding: 0 4px;
+	margin-bottom: -4px;
+}

@@ -56,8 +56,8 @@
   ],
 
   "axes": [
-    {"orient": "bottom", "scale": "x"},
-    {"orient": "left", "scale": "y"}
+    {"orient": "bottom", "scale": "x", "title": "Time step"},
+    {"orient": "left", "scale": "y", "title": "Sparsity"}
   ],
 
   "legends": [
