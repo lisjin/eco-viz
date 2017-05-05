@@ -9,11 +9,11 @@ function updateTable(data_url, table_templ_id, table_id) {
 	$.getJSON(data_url, function(data) {
 		var output = $('#' + table_id);
 		var template = $('#' + table_templ_id).html()
-		var test_out = Mustache.render(template, {"strucs": data, toFixed: function() {
+		var updated_data = Mustache.render(template, {"strucs": data, toFixed: function() {
 			return function(num, render) { return parseFloat(render(num)).toFixed(4); }
 		}});
 		$('#' + table_id + '-data').remove();
-		$('#' + table_id).append(test_out);
+		$('#' + table_id).append(updated_data);
 	});
 }
 
@@ -31,7 +31,7 @@ function tcInputListener() {
 		2: pref + '?type=node_distr',
 		3: pref2 + '?type=struc_distr',
 		4: pref2 + '?type=node_distr'
-	}
+	};
 
 	for (var i = 0; i < 5; ++i) {
 		updateEmbed('static/specs/spec_v' + i.toString() + '.json', specs[i], '#view' + i.toString());
@@ -42,11 +42,9 @@ function tcInputListener() {
 }
 
 $(function() {
-	vega.embed('#view0', 'static/specs/spec_v0.json');
-	vega.embed('#view1', 'static/specs/spec_v1.json');
-	vega.embed('#view2', 'static/specs/spec_v2.json');
-	vega.embed('#view3', 'static/specs/spec_v3.json');
-	vega.embed('#view4', 'static/specs/spec_v4.json');
+	for (var i = 0; i < 5; ++i) {
+		vega.embed('#view' + i.toString(), 'static/specs/spec_v' + i.toString() + '.json');
+	}
 
 	updateTable('data/MH01/MH01_Rest+0.30-12.json', 'tc-table-template', 'tc-table');
 	updateTable('data/MH01/MH01_MindfulRest+0.30-12.json', 'tc-table2-template', 'tc-table2')
