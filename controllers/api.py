@@ -24,6 +24,22 @@ def get_region(node_id):
 	return ''
 
 
+def parse_node_id(node_str):
+	return int(re.findall('\/n\d+', node_str)[0][2:])
+
+
+def parse_traversal_results(traversal_results):
+	return [
+		{
+			'source': parse_node_id(path['edges'][0]['_from']),
+			'target': parse_node_id(path['edges'][0]['_to']),
+			'tstep': int(path['edges'][0]['tstep']),
+			'id': int(re.findall('\d+', path['edges'][0]['id'])[0])
+		}
+		for path in traversal_results['paths']
+	]
+
+
 def get_tsteps_count(graph_name, r_type):
 	query = """
 	FOR e in %s COLLECT tstep = TO_NUMBER(e.tstep) WITH COUNT into counter
@@ -32,25 +48,29 @@ def get_tsteps_count(graph_name, r_type):
 	return db.aql.execute(query, bind_vars={'r_type_id': 'Rest' if r_type == 'R' else 'Mindful Rest'})
 
 
-def get_traversal(graph_name):
-	edge_col = graph_name + '_edges'
-	start_node = graph_name + '_nodes/n1'
-	query = """
-	LET nodes = (FOR v IN ANY @start_node %s RETURN {id: v._id})
-	LET links = (FOR v, e IN ANY @start_node %s OPTIONS {maxDepth: 1, includeData: true}
-		RETURN {source: e._from, target: e._to, tstep: TO_NUMBER(e.tstep)})
-	RETURN {nodes, links}
-	""" % (edge_col, edge_col)
-	return db.aql.execute(query, bind_vars={'start_node': start_node})
-
-
 @api.route('/api/traverse/<graph_name>')
 def traverse_route(graph_name):
-	results = [t for t in get_traversal(graph_name)]
-	for i in range(len(results[0]['nodes'])):
-		node_id = int(re.findall('\d+', results[0]['nodes'][i]['id'])[-1])
-		results[0]['nodes'][i]['region'] = get_region(node_id)
-	return jsonify(results[0])
+	graph = db.graph(graph_name)
+	nodes = [1, 2, 3, 4]
+	all_edges = []
+	for node in nodes:
+		traversal_results = graph.traverse(
+			start_vertex= graph_name + '_nodes/n' + str(node),
+			strategy='bfs',
+			edge_uniqueness='global',
+			min_depth=1,
+			max_depth=1,
+			filter_func="""
+				var node_set = new Set([%s])
+				if (!node_set.has(vertex._id)) {
+					return ["prune", "exclude"];
+				}
+				return;
+			""" % ', '.join(['\"' + graph_name + '_nodes/n' + str(n) + '\"' for n in nodes])
+		)
+		all_edges += parse_traversal_results(traversal_results)
+	all_nodes = [{'id': node, 'region': get_region(node)} for node in nodes]
+	return jsonify({'nodes': all_nodes, 'links': all_edges})
 
 
 @api.route('/api/timesteps/<graph_name>')
