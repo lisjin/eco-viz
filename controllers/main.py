@@ -49,4 +49,4 @@ def send_data(path):
 	elif req_type == 'node_distr':
 		nodes_flat = get_nodes(entry)
 		return json.dumps(sorted(nodes_flat, key=lambda k: k['category']))
-	return json.dumps(entry)
+	return jsonify(entry)

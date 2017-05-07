@@ -2,6 +2,7 @@ from flask import *
 from extensions import db
 
 import re
+import requests
 
 api = Blueprint('api', __name__, template_folder='templates')
 
@@ -34,7 +35,7 @@ def parse_traversal_results(traversal_results):
 			'source': parse_node_id(path['edges'][0]['_from']),
 			'target': parse_node_id(path['edges'][0]['_to']),
 			'tstep': int(path['edges'][0]['tstep']),
-			'id': int(re.findall('\d+', path['edges'][0]['id'])[0])
+			'id': path['edges'][0]['tstep'] + '_' + re.findall('\d+', path['edges'][0]['id'])[0]
 		}
 		for path in traversal_results['paths']
 	]
@@ -48,10 +49,17 @@ def get_tsteps_count(graph_name, r_type):
 	return db.aql.execute(query, bind_vars={'r_type_id': 'Rest' if r_type == 'R' else 'Mindful Rest'})
 
 
+def construct_tc_query(parts):
+	parts[1] = 'Rest' if parts[1] is 'R' else 'MindfulRest'
+	return 'data/' + parts[0] + '/' + parts[0] + '_' + parts[1] + '+0.' + parts[2][1:] + '-' + parts[3] + '.json'
+
+
 @api.route('/api/traverse/<graph_name>')
 def traverse_route(graph_name):
 	graph = db.graph(graph_name)
-	nodes = [1, 2, 3, 4]
+	parts = graph_name.split('_')
+	response = json.loads(requests.get(request.url_root + construct_tc_query(parts)).text)
+	nodes = response[0]['nodes']
 	all_edges = []
 	for node in nodes:
 		traversal_results = graph.traverse(
@@ -62,15 +70,15 @@ def traverse_route(graph_name):
 			max_depth=1,
 			filter_func="""
 				var node_set = new Set([%s])
-				if (!node_set.has(vertex._id)) {
+				if (!node_set.has(vertex._id) || (path.edges.length && path.edges[0].tstep != 9)) {
 					return ["prune", "exclude"];
 				}
 				return;
 			""" % ', '.join(['\"' + graph_name + '_nodes/n' + str(n) + '\"' for n in nodes])
 		)
 		all_edges += parse_traversal_results(traversal_results)
-	all_nodes = [{'id': node, 'region': get_region(node)} for node in nodes]
-	return jsonify({'nodes': all_nodes, 'links': all_edges})
+	all_nodes = [{'id': node, 'label': node,'region': get_region(int(node))} for node in nodes]
+	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
 
 @api.route('/api/timesteps/<graph_name>')

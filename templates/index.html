@@ -9,8 +9,6 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 
-	<link rel="shortcut icon" href="/favicon.ico">
-
 	<!-- Mobile Specific Metas
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -33,6 +31,10 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
 	<script src="//vega.github.io/vega-embed/vega-embed.js"></script>
+
+	<script src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/sigma.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.layout.forceAtlas2.min.js"></script>
 
 	<script src="{{ url_for('static', filename='js/index.js') }}"></script>
 </head>
@@ -93,6 +95,19 @@
 		</div>
 	</div>
 	<div class="row">
+		<h6 class="centered header-upper">Node count <span class="subtext">by structure participation count</span></h6>
+	</div>
+	<div class="row">
+		<div class="one-half column">
+			<div id="view2"></div>
+		</div>
+		<div class="one-half column">
+			<div id="view4"></div>
+		</div>
+	</div>
+	<br>
+	<br>
+	<div class="row">
 		<h6 class="centered header-upper">Summary item count <span class="subtext">by structure type</span></h6>
 	</div>
 	<div class="row">
@@ -106,14 +121,14 @@
 	<br>
 	<br>
 	<div class="row">
-		<h6 class="centered header-upper">Node count <span class="subtext">by structure participation count</span></h6>
+		<h6 class="centered header-upper">Graph visualization</h6>
 	</div>
 	<div class="row">
 		<div class="one-half column">
-			<div id="view2"></div>
+			<div id="graph-rest" class="graph-container"></div>
 		</div>
 		<div class="one-half column">
-			<div id="view4"></div>
+			<div id="graph-mindful-rest" class="graph-container"></div>
 		</div>
 	</div>
 	<br>

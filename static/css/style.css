@@ -41,3 +41,9 @@ table td span:not(:last-of-type)::after {
 	padding: 0 4px;
 	margin-bottom: -4px;
 }
+
+.graph-container {
+	height: 400px;
+	margin: auto;
+	border: 1px solid #e0ded7;
+}

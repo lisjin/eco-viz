@@ -9,11 +9,11 @@ function updateTable(data_url, table_templ_id, table_id) {
 	$.getJSON(data_url, function(data) {
 		var output = $('#' + table_id);
 		var template = $('#' + table_templ_id).html()
-		var updated_data = Mustache.render(template, {"strucs": data, toFixed: function() {
+		var updatedData = Mustache.render(template, {"strucs": data, toFixed: function() {
 			return function(num, render) { return parseFloat(render(num)).toFixed(4); }
 		}});
 		$('#' + table_id + '-data').remove();
-		$('#' + table_id).append(updated_data);
+		$('#' + table_id).append(updatedData);
 	});
 }
 
@@ -41,14 +41,58 @@ function tcInputListener() {
 	updateTable(pref2, 'tc-table2-template', 'tc-table2');
 }
 
+function getMappedColor(maxDegree, curDegree) {
+	var hue = ((maxDegree - curDegree) * 120 / 100).toString(10);
+	return ['hsl(', hue, ', 100%, 50%)'].join('');
+}
+
+function updateSigma(data_url, container_id) {
+	sigma.parsers.json(data_url, {
+		container: container_id,
+		renderer: {
+			container: document.getElementById(container_id),
+			type: 'canvas'
+		},
+		settings: {
+			minNodeSize: 3,
+			maxNodeSize: 6
+		}
+	}, function(s) {
+		// Display nodes in a circle
+		var allDegrees = s.graph.nodes().map(function(obj) {
+			return s.graph.degree(obj.label);
+		});
+		var maxDegree = Math.max.apply(Math, allDegrees);
+
+		s.graph.nodes().forEach(function(node, i, a) {
+			node.x = Math.cos(Math.PI * 2 * i / a.length);
+			node.y = Math.sin(Math.PI * 2 * i / a.length);
+			node.size = s.graph.degree(node.id);
+			node.color = getMappedColor(maxDegree, node.size);
+		});
+
+		// Start the layout algorithm, then stop after specified timeout
+		s.startForceAtlas2({slowDown: 10});
+		setTimeout(function() {
+			s.stopForceAtlas2();
+		}, 1000);
+	});
+}
+
 $(function() {
+	// Initial embedding of Vega charts
 	for (var i = 0; i < 5; ++i) {
 		vega.embed('#view' + i.toString(), 'static/specs/spec_v' + i.toString() + '.json');
 	}
 
+	updateSigma('api/traverse/MH01_R_030_12', 'graph-rest');
+	updateSigma('api/traverse/MH01_MR_030_12', 'graph-mindful-rest');
+
+	// Initialization of full TimeCrunch summary tables
 	updateTable('data/MH01/MH01_Rest+0.30-12.json', 'tc-table-template', 'tc-table');
 	updateTable('data/MH01/MH01_MindfulRest+0.30-12.json', 'tc-table2-template', 'tc-table2')
 
+	// Listen for user selection from dropdown menus
 	$('#tc-input-subject').change(tcInputListener);
 	$('#tc-input-thresh').change(tcInputListener);
 	$('#tc-input-tstep').change(tcInputListener);
