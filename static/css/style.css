@@ -17,7 +17,7 @@
 }
 
 table td span:not(:last-of-type)::after {
-	content: ", ";
+	content: " ";
 }
 
 .table-wrapper {
@@ -46,4 +46,11 @@ table td span:not(:last-of-type)::after {
 	height: 400px;
 	margin: auto;
 	border: 1px solid #e0ded7;
+}
+
+.tstep-button {
+	height: 24px;
+	line-height: 24px;
+	width: 34px;
+	padding: 0;
 }

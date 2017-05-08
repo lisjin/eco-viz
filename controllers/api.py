@@ -1,21 +1,10 @@
 from flask import *
-from extensions import db
+from extensions import db, comps
 
 import re
 import requests
 
 api = Blueprint('api', __name__, template_folder='templates')
-
-# Global dict mapping from brain region to node IDs
-comps = {
-	'DAN': set([25, 39, 66, 71, 79]),
-	'DMN': set([18, 26, 50, 52, 54, 56, 75, 90, 91, 95, 100]),
-	'FPN': set([14, 42, 51, 65, 94]),
-	'LN': set([47, 85]),
-	'SMN': set([16, 59, 60, 63, 64, 97, 98]),
-	'VAN': set([7, 24, 29, 41, 58, 67, 84, 86]),
-	'VN': set([31, 34, 43, 49, 57, 72, 96])
-}
 
 
 def get_region(node_id):
@@ -54,15 +43,10 @@ def construct_tc_query(parts):
 	return 'data/' + parts[0] + '/' + parts[0] + '_' + parts[1] + '+0.' + parts[2][1:] + '-' + parts[3] + '.json'
 
 
-@api.route('/api/traverse/<graph_name>')
-def traverse_route(graph_name):
-	graph = db.graph(graph_name)
-	parts = graph_name.split('_')
-	response = json.loads(requests.get(request.url_root + construct_tc_query(parts)).text)
-	nodes = response[0]['nodes']
+def get_traversal_edges(nodes, graph_name, nodes_str, tstep):
 	all_edges = []
 	for node in nodes:
-		traversal_results = graph.traverse(
+		traversal_results = db.graph(graph_name).traverse(
 			start_vertex= graph_name + '_nodes/n' + str(node),
 			strategy='bfs',
 			edge_uniqueness='global',
@@ -70,14 +54,28 @@ def traverse_route(graph_name):
 			max_depth=1,
 			filter_func="""
 				var node_set = new Set([%s])
-				if (!node_set.has(vertex._id) || (path.edges.length && path.edges[0].tstep != 9)) {
+				if (!node_set.has(vertex._id) || (path.edges.length && path.edges[0].tstep != %s)) {
 					return ["prune", "exclude"];
 				}
 				return;
-			""" % ', '.join(['\"' + graph_name + '_nodes/n' + str(n) + '\"' for n in nodes])
+			""" % (nodes_str, tstep)
 		)
 		all_edges += parse_traversal_results(traversal_results)
+	return all_edges
+
+
+@api.route('/api/traverse/<graph_name>')
+def traverse_route(graph_name):
+	tstep = request.args.get('tstep')
+	struc = int(request.args.get('struc'))
+
+	parts = graph_name.split('_')
+	response = json.loads(requests.get(request.url_root + construct_tc_query(parts)).text)
+	nodes = response[struc]['nodes']
+	nodes_str = ', '.join(['\"' + graph_name + '_nodes/n' + str(n) + '\"' for n in nodes])
+
 	all_nodes = [{'id': node, 'label': node,'region': get_region(int(node))} for node in nodes]
+	all_edges = get_traversal_edges(nodes, graph_name, nodes_str, tstep)
 	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
 
@@ -86,6 +84,7 @@ def timesteps_route(graph_name):
 	r_type = graph_name.split('_')[1]
 	r_type_alt = 'R' if r_type == 'MR' else 'MR'
 	graph_name_alt = re.sub('_%s_' % r_type, '_%s_' % r_type_alt, graph_name)
+
 	c1 = get_tsteps_count(graph_name, r_type)
 	c2 = get_tsteps_count(graph_name_alt, r_type_alt)
 	results = [c for c in c1] + [c for c in c2]

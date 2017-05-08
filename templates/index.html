@@ -168,7 +168,7 @@
 		{{#strucs}}
 		<tr>
 			<td>{{struc}}</td>
-			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
+			<td>{{#tsteps}}<span><button class="tstep-button js--tstep-button">{{.}}</button></span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
 			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
 		</tr>
@@ -180,7 +180,7 @@
 		{{#strucs}}
 		<tr>
 			<td>{{struc}}</td>
-			<td>{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
+			<td>{{#tsteps}}<span><button class="tstep-button js--tstep-button">{{.}}</button></span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
 			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
 		</tr>
