@@ -54,3 +54,45 @@ table td span:not(:last-of-type)::after {
 	width: 34px;
 	padding: 0;
 }
+
+.color-legend ul {
+	list-style: none;
+	list-style-position: inside;
+	white-space: nowrap;
+}
+
+.color-legend li::before {
+	content: "\02588\0020";
+}
+
+.color-legend li[data-type="dan"]::before {
+	color: rgb(239,83,80);
+}
+
+.color-legend li[data-type="dmn"]::before {
+	color: rgb(255,167,38);
+}
+
+.color-legend li[data-type="fpn"]::before {
+	color: rgb(255,238,88);
+}
+
+.color-legend li[data-type="ln"]::before {
+	color: rgb(102,187,106);
+}
+
+.color-legend li[data-type="smn"]::before {
+	color: rgb(66,165,245);
+}
+
+.color-legend li[data-type="van"]::before {
+	color: rgb(92,107,192);
+}
+
+.color-legend li[data-type="vn"]::before {
+	color: rgb(171,71,188);
+}
+
+.color-legend li[data-type="unlabeled"]::before {
+	color: rgb(189,189,189);
+}

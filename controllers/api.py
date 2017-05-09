@@ -74,7 +74,7 @@ def traverse_route(graph_name):
 	nodes = response[struc]['nodes']
 	nodes_str = ', '.join(['\"' + graph_name + '_nodes/n' + str(n) + '\"' for n in nodes])
 
-	all_nodes = [{'id': node, 'label': node,'region': get_region(int(node))} for node in nodes]
+	all_nodes = [{'id': node, 'label': node, 'region': get_region(int(node))} for node in nodes]
 	all_edges = get_traversal_edges(nodes, graph_name, nodes_str, tstep)
 	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
