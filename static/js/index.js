@@ -1,15 +1,10 @@
-function updateEmbed(specPath, specURL, specID) {
-	$.getJSON(specPath, function(spec) {
-		spec.data[0].url = specURL;
-		vega.embed(specID, spec);
-	});
-}
-
+// Return string of HSL color mapping to curDegree, relative to maxDegree
 function getMappedColor(maxDegree, curDegree) {
 	var hue = ((maxDegree - curDegree) * 120 / 100).toString(10);
 	return ['hsl(', hue, ', 100%, 50%)'].join('');
 }
 
+// Update the sigma instance located in sigmaID with new dataURL source for graph
 function updateSigma(dataURL, sigmaID) {
 	$('#' + sigmaID).empty();
 	var s = new sigma({
@@ -46,6 +41,8 @@ function updateSigma(dataURL, sigmaID) {
 	});
 }
 
+// Use mustache.js to update content in table located in tableTemplID with updated data from dataURL
+// Update graph visualizations by using first structure at first time step in updated table
 function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
 	$.getJSON(dataURL, function(data) {
 		var output = $('#' + tableID);
@@ -60,15 +57,17 @@ function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
 		$('#' + tableID).append(updatedData);
 
 		if (g) {
-			var $tstepButton = $('#tc-table .js--tstep-button').first()
+			var $tstepButton = $('#' + tableID + ' .js--tstep-button').first()
 			var tstepChoice = $tstepButton.text();
+			console.log(tstepChoice);
 			var strucIndex = $tstepButton.parents('tr').index();
 			updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
-				'_' + g.tstep + '?tstep=' + tstepChoice +'&struc=' + strucIndex, sigmaID);
+				'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex, sigmaID);
 		}
 	});
 }
 
+// Return a single object containing currently selected values from dropdown menus
 function getGraphParams() {
 	return {
 		'subject': $('#tc-input-subject').find('option:selected')[0].value,
@@ -77,6 +76,15 @@ function getGraphParams() {
 	};
 }
 
+// Replace the data URL of specPath located in specID to specURL
+function updateEmbed(specPath, specURL, specID) {
+	$.getJSON(specPath, function(spec) {
+		spec.data[0].url = specURL;
+		vega.embed(specID, spec);
+	});
+}
+
+// Update charts, tables, and graph visualizations based on new dropdown menu selections
 function tcInputListener() {
 	var g = getGraphParams();
 
@@ -99,6 +107,7 @@ function tcInputListener() {
 	updateTable(pref2, 'tc-table2-template', 'tc-table2', g, 'MR', 'graph-mindful-rest');
 }
 
+// Update graph visualizations based on content of clicked time step button
 function tstepButtonListener() {
 	var g = getGraphParams();
 	var tstepChoice = this.innerHTML;
