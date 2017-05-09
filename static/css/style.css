@@ -7,6 +7,21 @@
 	display: none;
 }
 
+section {
+	border-top: 1px solid #eee;
+	margin-top: 5%;
+	margin-bottom: 5%;
+	padding-top: 5%;
+}
+
+section.no-top {
+	margin-top: 0;
+}
+
+section:last-child {
+	margin-bottom: 0;
+}
+
 .centered {
 	text-align: center;
 }
@@ -21,9 +36,13 @@ table td span:not(:last-of-type)::after {
 }
 
 .table-wrapper {
-	max-height: 600px;
+	margin-top: 5%;
+	max-height: 500px;
 	overflow-y: scroll;
-	margin-left: 2%;
+}
+
+.table-wrapper th {
+	text-align: center;
 }
 
 .table-wrapper th a {
@@ -36,10 +55,22 @@ table td span:not(:last-of-type)::after {
 	font-weight: 600;
 }
 
-.logo {
+.logo-icon {
 	width: 40px;
 	padding: 0 4px;
 	margin-bottom: -4px;
+}
+
+.tooltip-icon {
+	width: 24px;
+	margin-bottom: -12px;
+}
+
+.tooltip {
+	cursor: pointer;
+	text-transform: none;
+	font-weight: normal;
+	letter-spacing: normal;
 }
 
 .graph-container {

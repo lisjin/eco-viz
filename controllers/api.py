@@ -39,7 +39,7 @@ def get_tsteps_count(graph_name, r_type):
 
 
 def construct_tc_query(parts):
-	parts[1] = 'Rest' if parts[1] is 'R' else 'MindfulRest'
+	parts[1] = 'Rest' if parts[1] == 'R' else 'MindfulRest'
 	return 'data/' + parts[0] + '/' + parts[0] + '_' + parts[1] + '+0.' + parts[2][1:] + '-' + parts[3] + '.json'
 
 
