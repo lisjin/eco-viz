@@ -7,6 +7,22 @@
 	display: none;
 }
 
+.centered {
+	text-align: center;
+}
+
+.subtext {
+	color: grey;
+	font-style: italic;
+}
+
+.header-upper {
+	text-transform: uppercase;
+	letter-spacing: .2rem;
+	font-weight: 600;
+}
+
+/* Spacing of section elements */
 section {
 	border-top: 1px solid #eee;
 	margin-top: 5%;
@@ -22,39 +38,7 @@ section:last-child {
 	margin-bottom: 0;
 }
 
-.centered {
-	text-align: center;
-}
-
-.subtext {
-	color: grey;
-	font-style: italic;
-}
-
-table td span:not(:last-of-type)::after {
-	content: " ";
-}
-
-.table-wrapper {
-	margin-top: 5%;
-	max-height: 500px;
-	overflow-y: scroll;
-}
-
-.table-wrapper th {
-	text-align: center;
-}
-
-.table-wrapper th a {
-	cursor: pointer;
-}
-
-.header-upper {
-	text-transform: uppercase;
-	letter-spacing: .2rem;
-	font-weight: 600;
-}
-
+/* Icons and tooltip styling */
 .logo-icon {
 	width: 40px;
 	padding: 0 4px;
@@ -73,10 +57,47 @@ table td span:not(:last-of-type)::after {
 	letter-spacing: normal;
 }
 
+/* D3-specific */
+.arc text {
+  font: 10px sans-serif;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}
+
+/* Graph styling */
 .graph-container {
 	height: 400px;
 	margin: auto;
 	border: 1px solid #e0ded7;
+}
+
+.ticker {
+	margin-top: 2%;
+}
+
+.struc-ticker, .tstep-ticker {
+	font-weight: bold;
+}
+
+/* Table styling */
+table td span:not(:last-of-type)::after {
+	content: " ";
+}
+
+.table-wrapper {
+	max-height: 500px;
+	overflow-y: scroll;
+}
+
+.table-wrapper th {
+	text-align: center;
+}
+
+.table-wrapper th a {
+	cursor: pointer;
 }
 
 .tstep-button {
@@ -86,6 +107,7 @@ table td span:not(:last-of-type)::after {
 	padding: 0;
 }
 
+/* Color legend unordered list business */
 .color-legend ul {
 	list-style: none;
 	list-style-position: inside;

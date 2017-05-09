@@ -7,7 +7,7 @@
   "data": [
     {
       "name": "table",
-      "url": "data/MH01/MH01_Rest+0.30-12.json?type=struc_distr"
+      "url": "data/MH01/MH01_Rest+0.30-12.json?type=node_distr"
     }
   ],
 
@@ -38,8 +38,8 @@
   ],
 
   "axes": [
-    { "orient": "bottom", "scale": "xscale", "title": "Structure type" },
-    { "orient": "left", "scale": "yscale", "title": "# of summary items" }
+    { "orient": "bottom", "scale": "xscale", "title": "# of structures participated in" },
+    { "orient": "left", "scale": "yscale", "title": "# of nodes" }
   ],
 
   "marks": [
@@ -54,10 +54,10 @@
           "y2": {"scale": "yscale", "value": 0}
         },
         "update": {
-          "fill": {"value": "darkseagreen"}
+          "fill": {"value": "#7b6888"}
         },
         "hover": {
-          "fill": {"value": "forestgreen"}
+          "fill": {"value": "#6b486b"}
         }
       }
     },

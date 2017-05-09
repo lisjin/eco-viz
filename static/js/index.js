@@ -1,12 +1,12 @@
 window.regionRGBMap = {
-	'DAN': '239,83,80',		// Red
-	'DMN': '255,167,38',	// Orange
-	'FPN': '255,238,88',	// Yellow
-	'LN': '102,187,106',	// Green
-	'SMN': '66,165,245',	// Blue
-	'VAN': '92,107,192',	// Indigo
-	'VN': '171,71,188',		// Violet
-	'': '189,189,189'		// Grey (empty string key denotes unlabeled node)
+	'DAN': '239,83,80', // Red
+	'DMN': '255,167,38', // Orange
+	'FPN': '255,238,88', // Yellow
+	'LN': '102,187,106', // Green
+	'SMN': '66,165,245', // Blue
+	'VAN': '92,107,192', // Indigo
+	'VN': '171,71,188', // Violet
+	'': '189,189,189' // Grey (empty string key denotes unlabeled node)
 };
 
 // Return string of RGB color mapping based on brain region of node
@@ -54,6 +54,13 @@ function updateSigma(dataURL, sigmaID) {
 	});
 }
 
+function updateTicker(sigmaID, strucIndex, tstepChoice) {
+	var $ticker = $('#' + sigmaID).siblings('.ticker');
+
+	$ticker.find('.tstep-ticker').html(tstepChoice);
+	$ticker.find('.struc-ticker').html(strucIndex + 1);
+}
+
 // Use mustache.js to update content in table located in tableTemplID with updated data from dataURL
 // Update graph visualizations by using first structure at first time step in updated table
 function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
@@ -73,6 +80,8 @@ function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
 			var $tstepButton = $('#' + tableID + ' .js--tstep-button').first()
 			var tstepChoice = $tstepButton.text();
 			var strucIndex = $tstepButton.parents('tr').index();
+
+			updateTicker(sigmaID, strucIndex, tstepChoice);
 			updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
 				'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex, sigmaID);
 		}
@@ -96,23 +105,72 @@ function updateEmbed(specPath, specURL, specID) {
 	});
 }
 
+function updateD3Pie(dataURL, svgID) {
+	var svg = d3.select(svgID),
+		width = +svg.attr("width"),
+		height = +svg.attr("height"),
+		radius = Math.min(width, height) / 2,
+		g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+	var color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#a05d56", "#d0743c", "#ff8c00"]);
+
+	var pie = d3.pie()
+		.sort(null)
+		.value(function(d) { return d.amount; });
+
+	var path = d3.arc()
+		.outerRadius(radius - 10)
+		.innerRadius(0);
+
+	var label = d3.arc()
+		.outerRadius(radius - 40)
+		.innerRadius(radius - 40);
+
+	d3.json(dataURL, function(error, json) {
+		if (error) throw error;
+		var data = [];
+		$.each(json, function(k, v) {
+			data.push({
+				'category': v['category'],
+				'amount': v['amount']
+			});
+		});
+
+		var arc = g.selectAll(".arc")
+			.data(pie(data))
+			.enter().append("g")
+			.attr("class", "arc");
+
+		arc.append("path")
+			.attr("d", path)
+			.attr("fill", function(d) { return color(d.data.category); });
+
+		arc.append("text")
+			.attr("transform", function(d) { return "translate(" + label.centroid(d) + ")"; })
+			.attr("dy", "0.35em")
+			.text(function(d) { return d.data.category + ' (' + d.data.amount + ')'; });
+	});
+}
+
 // Update charts, tables, and graph visualizations based on new dropdown menu selections
 function tcInputListener() {
 	var g = getGraphParams();
-
 	var pref = 'data/' + g.subject + '/' + g.subject + '_Rest+' + g.thresh + '-' + g.tstep + '.json';
 	var pref2 = 'data/' + g.subject + '/' + g.subject + '_MindfulRest+' + g.thresh + '-' + g.tstep + '.json';
-
 	var specs = {
 		0: 'api/timesteps/' + g.subject + '_R_' + g.thresh.toString().replace('.', '') + '_' + g.tstep,
-		1: pref + '?type=struc_distr',
-		2: pref + '?type=node_distr',
-		3: pref2 + '?type=struc_distr',
-		4: pref2 + '?type=node_distr'
+		1: pref + '?type=node_distr',
+		2: pref2 + '?type=node_distr',
+		3: pref + '?type=struc_distr',
+		4: pref2 + '?type=struc_distr'
 	};
 
-	for (var i = 0; i < 5; ++i) {
+	for (var i = 0; i < 3; ++i) {
 		updateEmbed('static/specs/spec_v' + i.toString() + '.json', specs[i], '#view' + i.toString());
+	}
+
+	for (var i = 3; i < 5; ++i) {
+		updateD3Pie(specs[i], '#view' + i.toString());
 	}
 
 	updateTable(pref, 'tc-table-template', 'tc-table', g, 'R', 'graph-rest');
@@ -126,23 +184,19 @@ function tstepButtonListener() {
 	var strucIndex = $(this).parents('tr').index();
 	var restState = $(this).parents('table').is('#tc-table') ? 'R' : 'MR';
 	var sigmaID = (restState === 'R') ? 'graph-rest' : 'graph-mindful-rest';
+
+	updateTicker(sigmaID, strucIndex, tstepChoice);
 	updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
 				'_' + g.tstep + '?tstep=' + tstepChoice +'&struc=' + strucIndex, sigmaID);
 }
 
 $(function() {
 	// Initialization of Vega charts
-	for (var i = 0; i < 5; ++i) {
+	for (var i = 0; i < 3; ++i) {
 		vega.embed('#view' + i.toString(), 'static/specs/spec_v' + i.toString() + '.json');
 	}
 
-	// Initialization of graph visualizations
-	updateSigma('api/traverse/MH01_R_030_12?tstep=2&struc=0', 'graph-rest');
-	updateSigma('api/traverse/MH01_MR_030_12?tstep=2&struc=0', 'graph-mindful-rest');
-
-	// Initialization of full TimeCrunch summary tables
-	updateTable('data/MH01/MH01_Rest+0.30-12.json', 'tc-table-template', 'tc-table', '', '', '');
-	updateTable('data/MH01/MH01_MindfulRest+0.30-12.json', 'tc-table2-template', 'tc-table2', '', '', '');
+	tcInputListener();
 
 	// Listen for user selection from dropdown menus
 	$('#tc-input-subject, #tc-input-thresh, #tc-input-tstep').change(tcInputListener);

@@ -7,7 +7,7 @@
   "data": [
     {
       "name": "table",
-      "url": "data/MH01/MH01_Rest+0.30-12.json?type=node_distr"
+      "url": "data/MH01/MH01_MindfulRest+0.30-12.json?type=node_distr"
     }
   ],
 
@@ -54,10 +54,10 @@
           "y2": {"scale": "yscale", "value": 0}
         },
         "update": {
-          "fill": {"value": "salmon"}
+          "fill": {"value": "#7b6888"}
         },
         "hover": {
-          "fill": {"value": "red"}
+          "fill": {"value": "#6b486b"}
         }
       }
     },

@@ -99,27 +99,27 @@
 	</div>
 	<section class="no-top">
 		<div class="row">
-			<h6 class="centered header-upper">2. Node count <span class="subtext">by structure participation count</span></h6>
-		</div>
-		<div class="row">
-			<div class="one-half column">
-				<div id="view2"></div>
-			</div>
-			<div class="one-half column">
-				<div id="view4"></div>
-			</div>
-		</div>
-	</section>
-	<section>
-		<div class="row">
-			<h6 class="centered header-upper">3. Summary item count <span class="subtext">by structure type</span></h6>
+			<h6 class="centered header-upper">2. Node count <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Median and spread of structure participation can be inferred from the chart's shape. Hover over the bars to show node counts." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
 				<div id="view1"></div>
 			</div>
 			<div class="one-half column">
-				<div id="view3"></div>
+				<div id="view2"></div>
+			</div>
+		</div>
+	</section>
+	<section>
+		<div class="row">
+			<h6 class="centered header-upper">3. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character represents temporal structure, while the latter two represent the spatial structure. Structure counts are in parentheses." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+		</div>
+		<div class="row">
+			<div class="one-half column">
+				<svg id="view3" width="400" height="400"></svg>
+			</div>
+			<div class="one-half column">
+				<svg id="view4" width="400" height="400"></svg>
 			</div>
 		</div>
 	</section>
@@ -140,9 +140,11 @@
 		<div class="row">
 			<div class="one-half column">
 				<div id="graph-rest" class="graph-container"></div>
+				<p class="centered ticker">Structure <span class="struc-ticker"></span> at time step <span class="tstep-ticker"></span></p>
 			</div>
 			<div class="one-half column">
 				<div id="graph-mindful-rest" class="graph-container"></div>
+				<p class="centered ticker">Structure <span class="struc-ticker"></span> at time step <span class="tstep-ticker"></span></p>
 			</div>
 		</div>
 		<div class="row">
