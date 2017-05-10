@@ -20,7 +20,21 @@ function getGraphParams() {
 function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
 	$.getJSON(dataURL, function(data) {
 		var output = $('#' + tableID);
-		var template = $('#' + tableTemplID).html()
+		var template = $('#' + tableTemplID).html();
+
+		// For ranged structures, must show entire range of values from start to end time step
+		data.forEach(function(row, i, a) {
+			if (row['struc'][0] == 'r') {
+				var lowBound = parseInt(row['tsteps'][0]);
+				var lastIndex = row['tsteps'].length - 1;
+				var upBound = parseInt(row['tsteps'][lastIndex]);
+
+				row['tsteps'] = Array.apply(null, Array(upBound - lowBound + 1)).map(function(_, i) {
+					return (lowBound + i).toString();
+				});
+			}
+		});
+
 		var updatedData = Mustache.render(template, {
 			"strucs": data,
 			toFixed: function() {
@@ -61,6 +75,7 @@ function tcInputListener() {
 
 	for (var i = 3; i < 5; ++i) {
 		var svgID = '#view' + i.toString();
+
 		$(svgID).empty();
 		updateD3Pie(specs[i], svgID);
 	}
