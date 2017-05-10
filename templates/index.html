@@ -25,20 +25,22 @@
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
-	<script src="//vega.github.io/vega-embed/vega-embed.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
+	<script type="text/javascript" src="//vega.github.io/vega-embed/vega-embed.js"></script>
 
-	<script src="//d3js.org/d3.v4.min.js"></script>
+	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/sigma.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.layout.forceAtlas2.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/sigma.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.layout.forceAtlas2.min.js"></script>
 
-	<script src="{{ url_for('static', filename='js/index.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}" defer></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/struct_pie.js') }}" defer></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/graph_viz.js') }}" defer></script>
 </head>
 <body>
 
@@ -73,7 +75,7 @@
 			</select>
 		</div>
 		<div class="two columns">
-			<label for="tc-input-tstep"># of time steps</label>
+			<label for="tc-input-tstep">Time steps</label>
 			<select class="u-full-width" id="tc-input-tstep">
 				<option value="12">12</option>
 				<option value="16">16</option>
@@ -112,14 +114,14 @@
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">3. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character represents temporal structure, while the latter two represent the spatial structure. Structure counts are in parentheses." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">3. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal structure, while the latter two denote the spatial structure. Hover over slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
-				<svg id="view3" width="400" height="400"></svg>
+				<svg id="view3" width="425" height="400"></svg>
 			</div>
 			<div class="one-half column">
-				<svg id="view4" width="400" height="400"></svg>
+				<svg id="view4" width="425" height="400"></svg>
 			</div>
 		</div>
 	</section>

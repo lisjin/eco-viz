@@ -63,6 +63,18 @@ section:last-child {
   text-anchor: middle;
 }
 
+.arc text.amount {
+	display: none;
+}
+
+.arc:hover text.amount {
+	display: inline;
+}
+
+.arc:hover {
+	fill-opacity: .8;
+}
+
 .arc path {
   stroke: #fff;
 }
@@ -111,7 +123,12 @@ table td span:not(:last-of-type)::after {
 .color-legend ul {
 	list-style: none;
 	list-style-position: inside;
-	white-space: nowrap;
+}
+
+@media (min-width: 1000px) {
+	.color-legend ul {
+		white-space: nowrap;
+	}
 }
 
 .color-legend li::before {

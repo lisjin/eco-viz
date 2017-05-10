@@ -54,10 +54,10 @@
           "y2": {"scale": "yscale", "value": 0}
         },
         "update": {
-          "fill": {"value": "#7b6888"}
+          "fill": {"value": "#6b486b"}
         },
         "hover": {
-          "fill": {"value": "#6b486b"}
+          "fill": {"value": "#7b6888"}
         }
       }
     },
