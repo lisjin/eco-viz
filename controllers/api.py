@@ -54,7 +54,8 @@ def get_traversal_edges(nodes, graph_name, nodes_str, tstep):
 			max_depth=1,
 			filter_func="""
 				var node_set = new Set([%s])
-				if (!node_set.has(vertex._id) || (path.edges.length && path.edges[0].tstep != %s)) {
+				if (!node_set.has(vertex._id) ||
+				(path.edges.length && (path.edges[0].tstep != %s || path.edges[0]._from > path.edges[0]._to))) {
 					return ["prune", "exclude"];
 				}
 				return;

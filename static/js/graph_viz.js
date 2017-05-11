@@ -10,6 +10,17 @@ window.regionRGBMap = {
 	'': '189,189,189' // Grey (empty string key denotes unlabeled node)
 };
 
+window.regionCircleMap = {
+	'DAN': 0,
+	'DMN': 1,
+	'FPN': 2,
+	'LN': 3,
+	'SMN': 4,
+	'VAN': 5,
+	'VN': 6,
+	'': 7
+};
+
 // Return string of RGB color mapping based on brain region of node
 function getMappedColor(region) {
 	var mappedRGB = window.regionRGBMap[region];
@@ -22,6 +33,17 @@ function updateTicker(sigmaID, strucIndex, tstepChoice) {
 
 	$ticker.find('.tstep-ticker').html(tstepChoice);
 	$ticker.find('.struc-ticker').html(strucIndex + 1);
+}
+
+function regionCircleCompare(a, b) {
+	var aMappedID = window.regionCircleMap[a.region] * 1000 + parseInt(a.id);
+	var bMappedID = window.regionCircleMap[b.region] * 1000 + parseInt(b.id);
+
+	if (aMappedID < bMappedID)
+		return -1;
+	if (aMappedID > bMappedID)
+		return 1;
+	return 0;
 }
 
 // Update the sigma instance located in sigmaID with new dataURL source for graph
@@ -44,7 +66,9 @@ function updateSigma(dataURL, sigmaID) {
 			return s.graph.degree(obj.label);
 		});
 
-		s.graph.nodes().forEach(function(node, i, a) {
+		var tmpArr = s.graph.nodes().sort(regionCircleCompare);
+
+		tmpArr.forEach(function(node, i, a) {
 			// Initialize node's position to point along a circle
 			node.x = Math.cos(Math.PI * 2 * i / a.length);
 			node.y = Math.sin(Math.PI * 2 * i / a.length);
@@ -54,10 +78,6 @@ function updateSigma(dataURL, sigmaID) {
 			node.color = getMappedColor(node.region);
 		});
 
-		// Start the layout algorithm, then stop after specified timeout
-		s.startForceAtlas2({slowDown: 10});
-		setTimeout(function() {
-			s.stopForceAtlas2();
-		}, 1000);
+		s.refresh();
 	});
 }
