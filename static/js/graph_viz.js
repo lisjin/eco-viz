@@ -1,4 +1,7 @@
-// Global variable mapping from brain region to color (chosen arbitrarily)
+// Total number of nodes in graph
+window.numNodes = 100;
+
+// Mapping from brain region to color (chosen arbitrarily)
 window.regionRGBMap = {
 	'DAN': '239,83,80', // Red
 	'DMN': '255,167,38', // Orange
@@ -10,6 +13,7 @@ window.regionRGBMap = {
 	'': '189,189,189' // Grey (empty string key denotes unlabeled node)
 };
 
+// Mapping for brain region to index
 window.regionCircleMap = {
 	'DAN': 0,
 	'DMN': 1,
@@ -28,7 +32,7 @@ function getMappedColor(region) {
 }
 
 // Add class to grey out button on click
-function updateStrucName($tableSelector, $tstepButton) {
+function updateTstepButtonClicked($tableSelector, $tstepButton) {
 	$tableSelector.find('.js--tstep-button.clicked').removeClass('clicked');
 	$tstepButton.addClass('clicked');
 }
@@ -42,9 +46,11 @@ function updateTicker(sigmaID, strucIndex, strucName, tstepChoice) {
 	$ticker.find('.struc-name').html(strucName);
 }
 
+// Comparator used to sort nodes first by region, then by ID
 function regionCircleCompare(a, b) {
-	var aMappedID = window.regionCircleMap[a.region] * 1000 + parseInt(a.id);
-	var bMappedID = window.regionCircleMap[b.region] * 1000 + parseInt(b.id);
+	var separator = window.numNodes * 10;
+	var aMappedID = window.regionCircleMap[a.region] * separator + parseInt(a.id);
+	var bMappedID = window.regionCircleMap[b.region] * separator + parseInt(b.id);
 
 	if (aMappedID < bMappedID)
 		return -1;
@@ -53,8 +59,25 @@ function regionCircleCompare(a, b) {
 	return 0;
 }
 
+// For bipartite cores, need average y values of nodes on left and right sides
+function getYAvgVals(sortedNodes, staticStrucName, splitStart) {
+	var yLeftAvg = 0;
+	var yRightAvg = 0;
+
+	if (staticStrucName === 'bc') {
+		sortedNodes.forEach(function(node, i, a) {
+			yLeftAvg += (i < splitStart) ? i / splitStart : 0;
+			yRightAvg += (i >= splitStart) ? (i - splitStart) / (a.length - splitStart) : 0;
+		});
+		yLeftAvg /= splitStart;
+		yRightAvg /= (sortedNodes.length - splitStart);
+		return {left: yLeftAvg, right: yRightAvg};
+	}
+	return {};
+}
+
 // Update the sigma instance located in sigmaID with new dataURL source for graph
-function updateSigma(dataURL, sigmaID) {
+function updateSigma(dataURL, sigmaID, strucName, splitStart) {
 	$('#' + sigmaID).empty();
 	var s = new sigma({
 		container: sigmaID,
@@ -63,21 +86,28 @@ function updateSigma(dataURL, sigmaID) {
 			type: 'canvas'
 		},
 		settings: {
-			minNodeSize: 4,
-			maxNodeSize: 8
+			minNodeSize: 3,
+			maxNodeSize: 7
 		}
 	});
 
 	sigma.parsers.json(dataURL, s, function(s) {
-		var allDegrees = s.graph.nodes().map(function(obj) {
-			return s.graph.degree(obj.label);
-		});
-
+		var staticStrucName = strucName.substring(1, strucName.length);
 		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
+		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
+
 		sortedNodes.forEach(function(node, i, a) {
-			// Initialize node's position to point along a circle
-			node.x = Math.cos(Math.PI * 2 * i / a.length);
-			node.y = Math.sin(Math.PI * 2 * i / a.length);
+			// Initialize node's position in a vertical line on left or right side
+			if (staticStrucName === 'bc') {
+				node.x = (i < splitStart) ? 0 : 1;
+				node.y = (i < splitStart) ? (i / splitStart) - yAvgVals.left
+					: (i - splitStart) / (a.length - splitStart) - yAvgVals.right;
+			}
+			else if (staticStrucName === 'fc') {
+				// Initialize node's position to point along a circle
+				node.x = Math.cos(Math.PI * 2 * i / a.length);
+				node.y = Math.sin(Math.PI * 2 * i / a.length);
+			}
 
 			// Update node's size and color based on its degree and brain region, respectively
 			node.size = s.graph.degree(node.id);

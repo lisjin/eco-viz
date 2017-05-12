@@ -1,3 +1,4 @@
+// Offset, in pixels, of navbar from top of window
 window.navOffsetTop = $('.navbar').offset().top;
 
 // Toggle 'docked-nav' class based on current offset in relation to navbar
@@ -14,9 +15,9 @@ function scrollListener() {
 }
 
 // Replace the data URL of specPath located in specID to specURL
-function updateEmbed(specPath, specURL, specID) {
+function updateEmbed(specPath, dataURL, specID) {
 	$.getJSON(specPath, function(spec) {
-		spec.data[0].url = specURL;
+		spec.data[0].url = dataURL;
 		vega.embed(specID, spec);
 	});
 }
@@ -107,9 +108,31 @@ function expandRangedTsteps(data) {
 	});
 }
 
+// Construct the API graph traversal URL
+function constructTraverseDataURL(g, restStateChar, tstepChoice, strucIndex) {
+	return 'api/traverse/' + g.subject + '_' + restStateChar + '_' + g.thresh.toString().replace('.', '') +
+	'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex;
+}
+
+// Update graph visualization, ticker below, and state of time step button clicked
+function updateGraphTable(g, $tstepButton, restStateChar, sigmaID) {
+	var $parentRow = $tstepButton.parents('tr');
+
+	var tstepChoice = $tstepButton.text();
+	var strucIndex = $parentRow.index();
+	var dataURL = constructTraverseDataURL(g, restStateChar, tstepChoice, strucIndex);
+
+	var strucName = $parentRow.find('td').first().text();
+	var splitStart = $parentRow[0].hasAttribute('data-split-start') ? $parentRow.attr('data-split-start') : '';
+
+	updateSigma(dataURL, sigmaID, strucName, splitStart);
+	updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
+	updateTstepButtonClicked($tstepButton.parents('table'), $tstepButton);
+}
+
 // Use mustache.js to update content in table located in tableTemplID with updated data from dataURL
 // Update graph visualizations by using first structure at first time step in updated table
-function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
+function updateTable(dataURL, tableTemplID, tableID, g, restStateChar, sigmaID) {
 	$.getJSON(dataURL, function(data) {
 		var output = $('#' + tableID);
 		var template = $('#' + tableTemplID).html();
@@ -126,25 +149,24 @@ function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
 		$('#' + tableID).append(updatedData);
 
 		if (g) {
-			var $tstepButton = $('#' + tableID + ' .js--tstep-button').first()
-			var tstepChoice = $tstepButton.text();
-			var strucIndex = $tstepButton.parents('tr').index();
-			var strucName = $('#' + tableID + ' tr td').first().text();
-
-			updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
-			updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
-				'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex, sigmaID);
-			updateStrucName($('#' + tableID), $tstepButton);
+			var $tstepButton = $('#' + tableID + ' .js--tstep-button').first();
+			updateGraphTable(g, $tstepButton, restStateChar, sigmaID);
 		}
 	});
+}
+
+// Construct the TimeCrunch data URL
+function constructTCDataURL(g, restStateChar) {
+	var restState = (restStateChar === 'R') ? 'Rest' : 'MindfulRest';
+	return 'data/' + g.subject + '/' + g.subject + '_' + restState + '+' + g.thresh + '-' + g.tstep + '.json';
 }
 
 // Update charts, tables, and graph visualizations based on new dropdown menu selections
 function tcInputListener() {
 	var g = getGraphParams();
-	var pathR = 'data/' + g.subject + '/' + g.subject + '_Rest+' + g.thresh + '-' + g.tstep + '.json';
-	var pathMR = 'data/' + g.subject + '/' + g.subject + '_MindfulRest+' + g.thresh + '-' + g.tstep + '.json';
-	var specs = {
+	var pathR = constructTCDataURL(g, 'R');
+	var pathMR = constructTCDataURL(g, 'MR');
+	var dataURLs = {
 		0: 'api/timesteps/' + g.subject + '_R_' + g.thresh.toString().replace('.', '') + '_' + g.tstep,
 		1: pathR + '?type=node_distr',
 		2: pathMR + '?type=node_distr',
@@ -153,14 +175,14 @@ function tcInputListener() {
 	};
 
 	for (var i = 0; i < 3; ++i) {
-		updateEmbed('static/specs/spec_v' + i.toString() + '.json', specs[i], '#view' + i.toString());
+		updateEmbed('static/specs/spec_v' + i.toString() + '.json', dataURLs[i], '#view' + i.toString());
 	}
 
 	for (var i = 3; i < 5; ++i) {
 		var svgID = '#view' + i.toString();
 
 		$(svgID).empty();
-		updateD3Pie(specs[i], svgID);
+		updateD3Pie(dataURLs[i], svgID);
 	}
 
 	updateTable(pathR, 'tc-table-template', 'tc-table', g, 'R', 'graph-rest');
@@ -170,19 +192,15 @@ function tcInputListener() {
 // Update graph visualizations based on content of clicked time step button
 function tstepButtonListener() {
 	var g = getGraphParams();
-	var tstepChoice = this.innerHTML;
-	var strucIndex = $(this).parents('tr').index();
-	var restState = $(this).parents('table').is('#tc-table') ? 'R' : 'MR';
-	var sigmaID = (restState === 'R') ? 'graph-rest' : 'graph-mindful-rest';
-	var strucName = $(this).parents('tr').find('td').first().text();
+	var $tstepButton = $(this);
+	var restStateChar = $(this).parents('table').is('#tc-table') ? 'R' : 'MR';
+	var sigmaID = (restStateChar === 'R') ? 'graph-rest' : 'graph-mindful-rest';
 
-	updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
-	updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
-				'_' + g.tstep + '?tstep=' + tstepChoice +'&struc=' + strucIndex, sigmaID);
-	updateStrucName($(this).parents('table'), $(this));
+	updateGraphTable(g, $tstepButton, restStateChar, sigmaID);
 }
 
 $(function() {
+	// If the viewport is wider than tablet size (750px), dock navbar on scroll
 	if ($(window).width() > 750) {
 		$(window).on('scroll', scrollListener);
 	}

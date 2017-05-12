@@ -21,11 +21,13 @@ def parse_line(line, comp_set):
 
 	# Bipartite structures have two sets of nodes
 	# So convert ['<struc> <nodes1>', '<nodes2>', '<tsteps>'] -> ['<struc> <nodes>', '<tsteps>']
+	split_start = -1
 	if len(parts) > 2:
+		split_start = len(nodes)
 		nodes += tsteps
 		tsteps = parts[2].split()
 	comps = comp_set.intersection(set(nodes))
-	return struc, nodes, tsteps, comps
+	return struc, nodes, split_start, tsteps, comps
 
 
 def calc_entropy(comp_dict_cur, comp_dict_counts):
@@ -81,11 +83,14 @@ def main():
 	patterns = []
 	with io.open(fname, 'r') as infile:	
 		for idx, line in enumerate(infile):
-			struc, nodes, tsteps, comps = parse_line(line, comp_set)
+			struc, nodes, split_start, tsteps, comps = parse_line(line, comp_set)
 			entropy = get_entropy(comp_dict, comp_dict_counts, comps)
-			
-			patterns.append({'struc': struc, 'nodes': nodes,'num_nodes': len(nodes), 'comps': list(comps), 'num_comps': len(comps),
-				'tsteps': tsteps, 'cross_entropy': entropy})
+
+			pattern = {'struc': struc, 'nodes': nodes,'num_nodes': len(nodes), 'comps': list(comps),
+			'num_comps': len(comps), 'tsteps': tsteps, 'cross_entropy': entropy}
+			if split_start > -1:
+				pattern['split_start'] = split_start
+			patterns.append(pattern)
 
 	# Write the populated dictionary of structures to file
 	with io.open(fname.split('_greedy')[0] + '.json', 'w') as outfile:

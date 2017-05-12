@@ -8,6 +8,7 @@
 	<title>TimeCrunch Viz</title>
 	<meta name="description" content="">
 	<meta name="author" content="">
+	<link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
 
 	<!-- Mobile Specific Metas
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -42,7 +43,6 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
 
 	<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}" defer></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/struct_pie.js') }}" defer></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/graph_viz.js') }}" defer></script>
 </head>
 <body>
@@ -187,7 +187,7 @@
 <script type="x-tmpl-mustache" id="tc-table-template">
 	<tbody id="tc-table-data">
 		{{#strucs}}
-		<tr>
+		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}}>
 			<td>{{struc}}</td>
 			<td>{{#tsteps}}<span><button class="tstep-button js--tstep-button">{{.}}</button></span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
@@ -199,7 +199,7 @@
 <script type="x-tmpl-mustache" id="tc-table2-template">
 	<tbody id="tc-table2-data">
 		{{#strucs}}
-		<tr>
+		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}}>
 			<td>{{struc}}</td>
 			<td>{{#tsteps}}<span><button class="tstep-button js--tstep-button">{{.}}</button></span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
