@@ -90,7 +90,7 @@ section:last-child {
 	margin-top: 2%;
 }
 
-.struc-ticker, .tstep-ticker {
+.struc-ticker, .tstep-ticker, .struc-name {
 	font-weight: bold;
 }
 
@@ -117,6 +117,11 @@ table td span:not(:last-of-type)::after {
 	line-height: 24px;
 	width: 34px;
 	padding: 0;
+}
+
+.tstep-button:hover, .clicked {
+	background-color: #888;
+	color: white;
 }
 
 /* Color legend unordered list business */

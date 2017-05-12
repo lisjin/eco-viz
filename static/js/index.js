@@ -15,6 +15,11 @@ function getGraphParams() {
 	};
 }
 
+function updateStrucName($tableSelector, $tstepButton) {
+	$tableSelector.find('.js--tstep-button.clicked').removeClass('clicked');
+	$tstepButton.addClass('clicked');
+}
+
 // Use mustache.js to update content in table located in tableTemplID with updated data from dataURL
 // Update graph visualizations by using first structure at first time step in updated table
 function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
@@ -48,10 +53,12 @@ function updateTable(dataURL, tableTemplID, tableID, g, restState, sigmaID) {
 			var $tstepButton = $('#' + tableID + ' .js--tstep-button').first()
 			var tstepChoice = $tstepButton.text();
 			var strucIndex = $tstepButton.parents('tr').index();
+			var strucName = $('#' + tableID + ' tr td').first().text();
 
-			updateTicker(sigmaID, strucIndex, tstepChoice);
+			updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
 			updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
 				'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex, sigmaID);
+			updateStrucName($('#' + tableID), $tstepButton);
 		}
 	});
 }
@@ -91,10 +98,12 @@ function tstepButtonListener() {
 	var strucIndex = $(this).parents('tr').index();
 	var restState = $(this).parents('table').is('#tc-table') ? 'R' : 'MR';
 	var sigmaID = (restState === 'R') ? 'graph-rest' : 'graph-mindful-rest';
+	var strucName = $(this).parents('tr').find('td').first().text();
 
-	updateTicker(sigmaID, strucIndex, tstepChoice);
+	updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
 	updateSigma('api/traverse/' + g.subject + '_' + restState + '_' + g.thresh.toString().replace('.', '') +
 				'_' + g.tstep + '?tstep=' + tstepChoice +'&struc=' + strucIndex, sigmaID);
+	updateStrucName($(this).parents('table'), $(this));
 }
 
 $(function() {

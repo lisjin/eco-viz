@@ -28,11 +28,12 @@ function getMappedColor(region) {
 }
 
 // Update the ticker below graph to display currently selected structure and time step
-function updateTicker(sigmaID, strucIndex, tstepChoice) {
+function updateTicker(sigmaID, strucIndex, strucName, tstepChoice) {
 	var $ticker = $('#' + sigmaID).siblings('.ticker');
 
 	$ticker.find('.tstep-ticker').html(tstepChoice);
 	$ticker.find('.struc-ticker').html(strucIndex + 1);
+	$ticker.find('.struc-name').html(strucName);
 }
 
 function regionCircleCompare(a, b) {
@@ -56,8 +57,8 @@ function updateSigma(dataURL, sigmaID) {
 			type: 'canvas'
 		},
 		settings: {
-			minNodeSize: 3,
-			maxNodeSize: 6
+			minNodeSize: 4,
+			maxNodeSize: 8
 		}
 	});
 
@@ -66,9 +67,8 @@ function updateSigma(dataURL, sigmaID) {
 			return s.graph.degree(obj.label);
 		});
 
-		var tmpArr = s.graph.nodes().sort(regionCircleCompare);
-
-		tmpArr.forEach(function(node, i, a) {
+		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
+		sortedNodes.forEach(function(node, i, a) {
 			// Initialize node's position to point along a circle
 			node.x = Math.cos(Math.PI * 2 * i / a.length);
 			node.y = Math.sin(Math.PI * 2 * i / a.length);
