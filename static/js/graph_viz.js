@@ -27,6 +27,12 @@ function getMappedColor(region) {
 	return 'rgb(' + mappedRGB + ')';
 }
 
+// Add class to grey out button on click
+function updateStrucName($tableSelector, $tstepButton) {
+	$tableSelector.find('.js--tstep-button.clicked').removeClass('clicked');
+	$tstepButton.addClass('clicked');
+}
+
 // Update the ticker below graph to display currently selected structure and time step
 function updateTicker(sigmaID, strucIndex, strucName, tstepChoice) {
 	var $ticker = $('#' + sigmaID).siblings('.ticker');
