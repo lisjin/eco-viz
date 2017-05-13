@@ -35,7 +35,7 @@ def get_tsteps_count(graph_name, r_type):
 	FOR e in %s COLLECT tstep = TO_NUMBER(e.tstep) WITH COUNT into counter
 		RETURN {x: tstep, y: (10000 - counter) / 10000, c: @r_type_id}'
 	""" % (graph_name + '_edges')
-	return db.aql.execute(query, bind_vars={'r_type_id': 'Rest' if r_type == 'R' else 'Mindful Rest'})
+	return db.aql.execute(query, bind_vars={'r_type_id': r_type})
 
 
 def construct_tc_query(parts):
@@ -80,11 +80,10 @@ def traverse_route(graph_name):
 	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
 
-@api.route('/api/timesteps/<graph_name>')
-def timesteps_route(graph_name):
-	r_type = graph_name.split('_')[1]
-	r_type_alt = 'R' if r_type == 'MR' else 'MR'
-	graph_name_alt = re.sub('_%s_' % r_type, '_%s_' % r_type_alt, graph_name)
+@api.route('/api/timesteps/<graph_name>/<graph_name_alt>')
+def timesteps_route(graph_name, graph_name_alt):
+	r_type = request.args.get('r_type')
+	r_type_alt = request.args.get('r_type_alt')
 
 	c1 = get_tsteps_count(graph_name, r_type)
 	c2 = get_tsteps_count(graph_name_alt, r_type_alt)

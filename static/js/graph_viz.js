@@ -92,13 +92,13 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart) {
 	});
 
 	sigma.parsers.json(dataURL, s, function(s) {
-		var staticStrucName = strucName.substring(1, strucName.length);
+		var staticStrucName = strucName.substring(1);
 		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
 		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
 
 		sortedNodes.forEach(function(node, i, a) {
-			// Initialize node's position in a vertical line on left or right side
 			if (staticStrucName === 'bc') {
+				// Initialize node's position in a vertical line on left or right side
 				node.x = (i < splitStart) ? 0 : 1;
 				node.y = (i < splitStart) ? (i / splitStart) - yAvgVals.left
 					: (i - splitStart) / (a.length - splitStart) - yAvgVals.right;

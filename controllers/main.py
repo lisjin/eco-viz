@@ -35,7 +35,11 @@ def get_nodes(entry):
 
 @main.route('/')
 def main_route():
-	return render_template('index.html')
+	try:
+		dropdown_mode = int(request.args.get('mode'))
+	except TypeError:
+		dropdown_mode = 1
+	return render_template('index.html', dropdown_mode=dropdown_mode)
 
 
 @main.route('/data/<path:path>')

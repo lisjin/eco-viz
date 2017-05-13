@@ -45,18 +45,22 @@
 	<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}" defer></script>
 	<script type="text/javascript" src="{{ url_for('static', filename='js/graph_viz.js') }}" defer></script>
 </head>
-<body>
+<body data-dropdown-mode={{ dropdown_mode }}>
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <div class="container">
-	<h2 class="centered header">TimeCrunch<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo-icon">Viz</h2>
+	<div class="two columns offset-by-ten">
+		{% set other_mode = 2 if dropdown_mode == 1 else 1 %}
+		<a class="button button-primary" href="{{ url_for('main.main_route', mode=other_mode) }}">Mode {{ other_mode }}</a>
+	</div>
+	<h3 class="centered">TimeCrunch<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo-icon">Viz</h3>
 	<nav class="navbar">
 		<div class="container">
 			<ul class="row navbar-list">
-				<li class="navbar-item two columns offset-by-three">
-					<label for="tc-input-subject">Subject</label>
-					<select class="u-full-width" id="tc-input-subject">
+				<li class={% if dropdown_mode == 1 %}"navbar-item two columns offset-by-three"{% elif dropdown_mode == 2 %}"navbar-item one column"{% endif %}>
+					<label for="tc-input-subject">Subject{% if dropdown_mode == 2 %} 1{% endif %}</label>
+					<select{% if dropdown_mode == 1 %} class="u-full-width"{% endif %} id="tc-input-subject">
 						<option value="MH01">MH01</option>
 						<option value="MH10">MH10</option>
 						<option value="MH11">MH11</option>
@@ -70,21 +74,70 @@
 						<option value="R35">R35</option>
 					</select>
 				</li>
+				{% if dropdown_mode == 2 %}
+				<li class="navbar-item one column">
+					<label for="tc-input-state">State 1</label>
+					<select id="tc-input-state">
+						<option value="R">R</option>
+						<option value="MR">MR</option>
+					</select>
+				</li>
+				{% endif %}
 				<li class="navbar-item two columns">
-					<label for="tc-input-thresh">Threshold</label>
+					<label for="tc-input-thresh">Threshold{% if dropdown_mode == 2 %} 1{% endif %}</label>
 					<select class="u-full-width" id="tc-input-thresh">
 						<option value="0.30">0.30</option>
 						<option value="0.45">0.45</option>
 					</select>
 				</li>
 				<li class="navbar-item two columns">
-					<label for="tc-input-tstep">Time steps</label>
+					<label for="tc-input-tstep">Time steps{% if dropdown_mode == 2 %} 1{% endif %}</label>
 					<select class="u-full-width" id="tc-input-tstep">
 						<option value="12">12</option>
 						<option value="16">16</option>
 						<option value="24">24</option>
 					</select>
 				</li>
+				{% if dropdown_mode == 2 %}
+				<li class="navbar-item one column">
+					<label for="tc-input-subject2">Subject 2</label>
+					<select id="tc-input-subject2">
+						<option value="MH01">MH01</option>
+						<option value="MH10">MH10</option>
+						<option value="MH11">MH11</option>
+						<option value="MH14">MH14</option>
+						<option value="MH18">MH18</option>
+						<option value="MH21">MH21</option>
+						<option value="MP18">MP18</option>
+						<option value="R01">R01</option>
+						<option value="R06">R06</option>
+						<option value="R18">R18</option>
+						<option value="R35">R35</option>
+					</select>
+				</li>
+				<li class="navbar-item one column">
+					<label for="tc-input-state2">State 2</label>
+					<select id="tc-input-state2">
+						<option value="R">R</option>
+						<option value="MR" selected="true">MR</option>
+					</select>
+				</li>
+				<li class="navbar-item two columns">
+					<label for="tc-input-thresh2">Threshold 2</label>
+					<select class="u-full-width" id="tc-input-thresh2">
+						<option value="0.30">0.30</option>
+						<option value="0.45">0.45</option>
+					</select>
+				</li>
+				<li class="navbar-item two columns">
+					<label for="tc-input-tstep2">Time steps 2</label>
+					<select class="u-full-width" id="tc-input-tstep2">
+						<option value="12">12</option>
+						<option value="16">16</option>
+						<option value="24">24</option>
+					</select>
+				</li>
+				{% endif %}
 			</ul>
 		</div>
 	</nav>
@@ -96,14 +149,16 @@
 			<div class="centered" id="view0"></div>
 		</div>
 	</section>
+	{% if dropdown_mode == 1 %}
 	<div class="row">
 		<div class="one-half column">
-			<h4 class="centered">Rest</h4>
+			<h5 class="centered">Rest</h5>
 		</div>
 		<div class="one-half column">
-			<h4 class="centered">Mindful Rest</h4>
+			<h5 class="centered">Mindful Rest</h5>
 		</div>
 	</div>
+	{% endif %}
 	<section class="no-top">
 		<div class="row">
 			<h6 class="centered header-upper">2. Node count <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Median and spread of structure participation can be inferred from the chart's shape. Hover over the bars to show node counts." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
@@ -146,11 +201,11 @@
 		</div>
 		<div class="row">
 			<div class="one-half column">
-				<div id="graph-rest" class="graph-container"></div>
+				<div id="graph" class="graph-container"></div>
 				<p class="centered ticker"><span class="struc-name"></span> (structure <span class="struc-ticker"></span>) at time step <span class="tstep-ticker"></span></p>
 			</div>
 			<div class="one-half column">
-				<div id="graph-mindful-rest" class="graph-container"></div>
+				<div id="graph2" class="graph-container"></div>
 				<p class="centered ticker"><span class="struc-name"></span> (structure <span class="struc-ticker"></span>) at time step <span class="tstep-ticker"></span></p>
 			</div>
 		</div>

@@ -1,7 +1,3 @@
-.header {
-	margin-top: 5%;
-}
-
 .vega-actions {
 	display: none;
 }
@@ -14,7 +10,6 @@
 .navbar {
 	display: block;
 	width: 100%;
-	height: 80px;
 	background: #fff;
 	z-index: 1;
 }
@@ -36,6 +31,11 @@
 
 .navbar-item select {
 	margin-right: 35px;
+}
+
+.navbar-item label {
+	font-size: 0.9em;
+	white-space: nowrap;
 }
 
 .docked-nav .navbar {
