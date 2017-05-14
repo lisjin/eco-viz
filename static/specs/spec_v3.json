@@ -1,0 +1,165 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v3.0.json",
+  "width": 400,
+  "padding": 5,
+  "autosize": "pad",
+
+  "signals": [
+    {
+      "name": "rangeStep", "value": 20
+    },
+    {
+      "name": "innerPadding", "value": 0.1
+    },
+    {
+      "name": "outerPadding", "value": 0.2
+    },
+    {
+      "name": "height",
+      "update": "trellisExtent[1]"
+    }
+  ],
+
+  "data": [
+    {
+      "name": "tuples",
+      "url": "data/MH01/MH01_Rest+0.30-12.json?type=node_distr2",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["region", "category"],
+          "fields": ["amount"],
+          "ops": ["average"],
+          "as": ["amount"]
+        }
+      ]
+    },
+    {
+      "name": "trellis",
+      "source": "tuples",
+      "transform": [
+        {
+          "type": "aggregate",
+          "groupby": ["region"]
+        },
+        {
+          "type": "formula", "as": "span",
+          "expr": "rangeStep * bandspace(datum.count, innerPadding, outerPadding)"
+        },
+        {
+          "type": "stack",
+          "field": "span"
+        },
+        {
+          "type": "extent",
+          "field": "y1",
+          "signal": "trellisExtent"
+        }
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "xscale",
+      "domain": {"data": "tuples", "field": "amount"},
+      "nice": true,
+      "zero": true,
+      "round": true,
+      "range": "width"
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "range": "category",
+      "domain": {"data": "trellis", "field": "region"}
+    }
+  ],
+
+  "axes": [
+    { "orient": "bottom", "scale": "xscale", "domain": true, "title": "# of structures participated in" }
+  ],
+
+  "legends": [
+    {
+      "stroke": "color",
+      "title": "Region",
+      "encode": {
+        "symbols": {
+          "enter": {
+            "strokeWidth": {"value": 2},
+            "size": {"value": 50}
+          }
+        }
+      }
+    }
+  ],
+
+  "marks": [
+    {
+      "type": "group",
+
+      "from": {
+        "data": "trellis",
+        "facet": {
+          "name": "faceted_tuples",
+          "data": "tuples",
+          "groupby": "region"
+        }
+      },
+
+      "encode": {
+        "enter": {
+          "x": {"value": 0},
+          "width": {"signal": "width"}
+        },
+        "update": {
+          "y": {"field": "y0"},
+          "y2": {"field": "y1"}
+        }
+      },
+
+      "scales": [
+        {
+          "name": "yscale",
+          "type": "band",
+          "paddingInner": {"signal": "innerPadding"},
+          "paddingOuter": {"signal": "outerPadding"},
+          "round": true,
+          "domain": {"data": "faceted_tuples", "field": "category"},
+          "range": {"step": {"signal": "rangeStep"}}
+        }
+      ],
+
+      "axes": [
+        { "orient": "left", "scale": "yscale",
+          "ticks": false, "domain": false, "labelPadding": 4 }
+      ],
+
+      "marks": [
+        {
+          "type": "rect",
+          "from": {"data": "faceted_tuples"},
+          "encode": {
+            "enter": {
+              "x": {"value": 0},
+              "x2": {"scale": "xscale", "field": "amount"},
+              "fill": {"scale": "color", "field": "region"},
+              "strokeWidth": {"value": 2}
+            },
+            "update": {
+              "y": {"scale": "yscale", "field": "category"},
+              "height": {"scale": "yscale", "band": 1},
+              "stroke": {"value": null},
+              "zindex": {"value": 0},
+              "fillOpacity": {"value": 1}
+            },
+            "hover": {
+              "fillOpacity": {"value": 0.8}
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

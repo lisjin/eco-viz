@@ -33,7 +33,7 @@ def parse_traversal_results(traversal_results):
 def get_tsteps_count(graph_name, r_type):
 	query = """
 	FOR e in %s COLLECT tstep = TO_NUMBER(e.tstep) WITH COUNT into counter
-		RETURN {x: tstep, y: (10000 - counter) / 10000, c: @r_type_id}'
+		RETURN {x: tstep, y: (100 * 99 - 2 * counter) / (100 * 99), c: @r_type_id}'
 	""" % (graph_name + '_edges')
 	return db.aql.execute(query, bind_vars={'r_type_id': r_type})
 

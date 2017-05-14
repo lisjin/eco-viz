@@ -1,4 +1,5 @@
 from flask import *
+from api import get_region
 from collections import Counter
 
 import os
@@ -14,23 +15,25 @@ def get_strucs(entry):
 	for e in entry:
 		strucs.setdefault(e['struc'], 0)
 		strucs[e['struc']] += 1
-	for k, v in strucs.iteritems():
-		strucs_flat.append({'category': k, 'amount': v})
+	strucs_flat = [{'category': k, 'amount': v} for k, v in strucs.iteritems()]
 	return strucs_flat
 
 
-def get_nodes(entry):
+def get_nodes(entry, grouped):
 	nodes = {}
 	nodes_flat = []
+	num_strucs = len(entry)
 	
 	for e in entry:
 		for n in e['nodes']:
 			nodes.setdefault(n, 0)
 			nodes[n] += 1
-	count = Counter(nodes.values())
-	for k in count:
-		nodes_flat.append({'category': int(k), 'amount': count[k]})
-	return nodes_flat
+	if grouped:
+		count = Counter(nodes.values())
+		nodes_flat = [{'category': int(k), 'amount': count[k]} for k in count]
+	else:
+		nodes_flat = [{'category': int(k), 'amount': v, 'region': get_region(int(k))} for k, v in nodes.iteritems()]
+	return nodes_flat[:10]
 
 
 @main.route('/')
@@ -51,6 +54,9 @@ def send_data(path):
 		strucs_flat = get_strucs(entry)
 		return json.dumps(sorted(strucs_flat, key=lambda k: k['amount'], reverse=True))
 	elif req_type == 'node_distr':
-		nodes_flat = get_nodes(entry)
+		nodes_flat = get_nodes(entry, True)
 		return json.dumps(sorted(nodes_flat, key=lambda k: k['category']))
+	elif req_type == 'node_distr2':
+		nodes_flat = get_nodes(entry, False)
+		return json.dumps(sorted(nodes_flat, key=lambda k: k['amount'], reverse=True))
 	return jsonify(entry)

@@ -175,10 +175,12 @@ function constructTstepsDataURL(g, g2, rType, rTypeAlt) {
 function updateSingleCol(g, TCDataURL, colSide) {
 	var i = 1 + colSide;
 	var j = 3 + colSide;
+	var k = 5 + colSide;
 
-	updateEmbed('static/specs/spec_v' + i.toString() + '.json', TCDataURL + '?type=node_distr', '#view' + i.toString());
+	updateEmbed('static/specs/spec_v1.json', TCDataURL + '?type=node_distr', '#view' + i.toString());
+	updateEmbed('static/specs/spec_v3.json', TCDataURL + '?type=node_distr2', '#view' + j.toString());
 
-	var svgID = '#view' + j.toString();
+	var svgID = '#view' + k.toString();
 	$(svgID).empty();
 	updateD3Pie(TCDataURL + '?type=struc_distr', svgID);
 

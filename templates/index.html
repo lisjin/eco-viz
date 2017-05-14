@@ -54,7 +54,7 @@
 		{% set other_mode = 2 if dropdown_mode == 1 else 1 %}
 		<a class="button button-primary" href="{{ url_for('main.main_route', mode=other_mode) }}">Mode {{ other_mode }}</a>
 	</div>
-	<h3 class="centered">TimeCrunch<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo-icon">Viz</h3>
+	<h3 class="centered">Connectome<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo-icon">Viz</h3>
 	<nav class="navbar">
 		<div class="container">
 			<ul class="row navbar-list">
@@ -143,7 +143,7 @@
 	</nav>
 	<section class="no-top">
 		<div class="row">
-			<h6 class="centered header-upper">1. Graph sparsity <span class="subtext">over time</span><span class="tooltip"><a data-balloon="Graph sparsity is defined as: (n^2 - # edges) / n^2. Select from 'interpolate' dropdown menu to change line curvature." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">1. Graph sparsity <span class="subtext">over time</span><span class="tooltip"><a data-balloon="Graph sparsity is defined as: (|V| &times; (|V| - 1) - 2 &times; |E|) / |V| &times; (|V| - 1). Select from 'interpolate' dropdown menu to change line curvature." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="centered" id="view0"></div>
@@ -174,20 +174,33 @@
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">3. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal, while the latter two denote the spatial structure. Hover over the slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">3. Top 10 node IDs <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Numbers on the y-axis denote node ID. The bar chart is sorted by average structure participation of nodes grouped by region." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
-				<svg id="view3" width="425" height="400"></svg>
+				<div id="view3"></div>
 			</div>
 			<div class="one-half column">
-				<svg id="view4" width="425" height="400"></svg>
+				<div id="view4"></div>
 			</div>
 		</div>
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">4. Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired time step under 'Time step(s)' column of table below to toggle graph visualization. (First time step of first structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">4. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal, while the latter two denote the spatial structure. Hover over the slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+		</div>
+		<div class="row">
+			<div class="one-half column">
+				<svg id="view5" width="425" height="400"></svg>
+			</div>
+			<div class="one-half column">
+				<svg id="view6" width="425" height="400"></svg>
+			</div>
+		</div>
+	</section>
+	<section>
+		<div class="row">
+			<h6 class="centered header-upper">5. Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired time step under 'Time step(s)' column of table below to toggle graph visualization. (First time step of first structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row color-legend">
 			<ul class="one column offset-by-two"><li data-type="dan">DAN</li></ul>
