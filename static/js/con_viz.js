@@ -10,9 +10,11 @@ function scrollListener() {
 	var $body = $('body');
 
 	if (window.navOffsetTop < scrollTop && !$body.hasClass('docked-nav')) {
+		$('.js--header').css('padding-bottom', $('.navbar').height());
 		$body.addClass('docked-nav');
 	}
 	if (window.navOffsetTop > scrollTop && $body.hasClass('docked-nav')) {
+		$('.js--header').css('padding-bottom', 0);
 		$body.removeClass('docked-nav');
 	}
 }
@@ -21,7 +23,9 @@ function scrollListener() {
 function updateEmbed(specPath, dataURL, specID) {
 	$.getJSON(specPath, function(spec) {
 		spec.data[0].url = dataURL;
-		vega.embed(specID, spec);
+		vega.embed(specID, spec, {}, function(error, result) {
+			if (error) throw error;
+		});
 	});
 }
 
@@ -177,12 +181,12 @@ function updateSingleCol(g, TCDataURL, colSide) {
 	var j = 3 + colSide;
 	var k = 5 + colSide;
 
-	updateEmbed('static/specs/spec_v1.json', TCDataURL + '?type=node_distr', '#view' + i.toString());
-	updateEmbed('static/specs/spec_v3.json', TCDataURL + '?type=node_distr2', '#view' + j.toString());
-
-	var svgID = '#view' + k.toString();
+	var svgID = '#view' + i.toString();
 	$(svgID).empty();
 	updateD3Pie(TCDataURL + '?type=struc_distr', svgID);
+
+	updateEmbed('static/specs/con-viz/spec_v1.json', TCDataURL + '?type=node_distr', '#view' + j.toString());
+	updateEmbed('static/specs/con-viz/spec_v3.json', TCDataURL + '?type=node_distr2', '#view' + k.toString());
 
 	var suffix = colSide === 0 ? '' : 2;
 	updateTable(TCDataURL, 'tc-table' + suffix + '-template', 'tc-table' + suffix, g, 'graph' + suffix);
@@ -206,7 +210,7 @@ function tcInputListener() {
 
 	var tstepsDataURL = constructTstepsDataURL(g, g2, rType, rTypeAlt);
 
-	updateEmbed('static/specs/spec_v0.json', tstepsDataURL, '#view0');
+	updateEmbed('static/specs/con-viz/spec_v0.json', tstepsDataURL, '#view0');
 
 	if (window.dropdownMode === 2 && !$.isWindow(this)) {
 		var colSide = $(this).attr('id').indexOf('2') > -1 ? 1 : 0;

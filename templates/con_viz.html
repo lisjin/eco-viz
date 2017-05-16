@@ -5,7 +5,7 @@
 	<!-- Basic Page Needs
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<meta charset="utf-8">
-	<title>TimeCrunch Viz</title>
+	<title>{% block title %}Connectome Viz{% endblock %}</title>
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
@@ -23,15 +23,12 @@
 	<link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet" type="text/css">
 	<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/0.2.4/balloon.min.css" rel="stylesheet" type="text/css">
 
-	<link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
-
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/shortcuts/sticky.min.js"></script>
 
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
@@ -42,23 +39,27 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/sigma.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
 
-	<script type="text/javascript" src="{{ url_for('static', filename='js/index.js') }}" defer></script>
-	<script type="text/javascript" src="{{ url_for('static', filename='js/graph_viz.js') }}" defer></script>
+	{% block js %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/con_viz.js') }}" defer></script>
+	{% endblock %}
+	<script type="text/javascript" src="{{ url_for('static', filename='js/tc_graph.js') }}" defer></script>
 </head>
 <body data-dropdown-mode={{ dropdown_mode }}>
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
 <div class="container">
+	{% block mode_button %}
 	<div class="two columns offset-by-ten">
 		{% set other_mode = 2 if dropdown_mode == 1 else 1 %}
-		<a class="button button-primary" href="{{ url_for('main.main_route', mode=other_mode) }}">Mode {{ other_mode }}</a>
+		<a class="button button-primary mode-button" href="{{ url_for('main.con_route', mode=other_mode) }}">Mode {{ other_mode }}</a>
 	</div>
-	<h3 class="centered">Connectome<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo-icon">Viz</h3>
+	{% endblock %}
+	<h3 class="centered header js--header">{% block header %}Connectome<img src="{{ url_for('static', filename='images/brain.svg') }}" class="logo-icon">Viz{% endblock %}</h3>
 	<nav class="navbar">
 		<div class="container">
 			<ul class="row navbar-list">
-				<li class={% if dropdown_mode == 1 %}"navbar-item two columns offset-by-three"{% elif dropdown_mode == 2 %}"navbar-item one column"{% endif %}>
+				<li class="navbar-item {% if dropdown_mode == 1 and connectome %}two columns offset-by-three{% elif dropdown_mode == 2 %}one column{% elif not connectome %}two columns offset-by-two{% endif %}">
 					<label for="tc-input-subject">Subject{% if dropdown_mode == 2 %} 1{% endif %}</label>
 					<select{% if dropdown_mode == 1 %} class="u-full-width"{% endif %} id="tc-input-subject">
 						<option value="MH01">MH01</option>
@@ -74,10 +75,10 @@
 						<option value="R35">R35</option>
 					</select>
 				</li>
-				{% if dropdown_mode == 2 %}
-				<li class="navbar-item one column">
-					<label for="tc-input-state">State 1</label>
-					<select id="tc-input-state">
+				{% if dropdown_mode == 2 or not connectome %}
+				<li class="navbar-item {% if connectome %}one column{% else %}two columns{% endif %}">
+					<label for="tc-input-state">State{% if connectome %} 1{% endif %}</label>
+					<select id="tc-input-state" {% if not connectome %}class="u-full-width"{% endif %}>
 						<option value="R">R</option>
 						<option value="MR">MR</option>
 					</select>
@@ -98,7 +99,7 @@
 						<option value="24">24</option>
 					</select>
 				</li>
-				{% if dropdown_mode == 2 %}
+				{% if dropdown_mode == 2 and connectome %}
 				<li class="navbar-item one column">
 					<label for="tc-input-subject2">Subject 2</label>
 					<select id="tc-input-subject2">
@@ -149,32 +150,31 @@
 			<div class="centered" id="view0"></div>
 		</div>
 	</section>
-	{% if dropdown_mode == 1 %}
+	{% block content %}
 	<div class="row">
 		<div class="one-half column">
-			<h5 class="centered">Rest</h5>
+			<h5 class="centered">{% if dropdown_mode == 1 %}Rest{% elif dropdown_mode == 2 %}1{% endif %}</h5>
 		</div>
 		<div class="one-half column">
-			<h5 class="centered">Mindful Rest</h5>
+			<h5 class="centered">{% if dropdown_mode == 1 %}Mindful Rest{% elif dropdown_mode == 2 %}2{% endif %}</h5>
 		</div>
 	</div>
-	{% endif %}
 	<section class="no-top">
 		<div class="row">
-			<h6 class="centered header-upper">2. Node count <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Median and spread of structure participation can be inferred from the chart's shape. Hover over the bars to show node counts." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">2. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal, while the latter two denote the spatial structure. Hover over the slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
-				<div id="view1"></div>
+				<svg id="view1" width="425" height="400"></svg>
 			</div>
 			<div class="one-half column">
-				<div id="view2"></div>
+				<svg id="view2" width="425" height="400"></svg>
 			</div>
 		</div>
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">3. Top 10 node IDs <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Numbers on the y-axis denote node ID. The bar chart is sorted by average structure participation of nodes grouped by region." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">3. Node count <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Median and spread of structure participation can be inferred from the chart's shape. Hover over the bars to show node counts." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
@@ -187,14 +187,14 @@
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">4. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal, while the latter two denote the spatial structure. Hover over the slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">4. Top 10 node IDs <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Numbers on the y-axis denote node ID. The bar chart is sorted by average structure participation of nodes grouped by region." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
-				<svg id="view5" width="425" height="400"></svg>
+				<div id="view5"></div>
 			</div>
 			<div class="one-half column">
-				<svg id="view6" width="425" height="400"></svg>
+				<div id="view6"></div>
 			</div>
 		</div>
 	</section>
@@ -249,6 +249,7 @@
 			</div>
 		</div>
 	</section>
+	{% endblock %}
 </div>
 
 {% raw %}

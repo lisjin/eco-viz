@@ -1,0 +1,10 @@
+{% extends "con_viz.html" %}
+{% block title %}TimeCrunch Viz{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tc_viz.js') }}" defer></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/tc_graph.js') }}" defer></script>
+{% endblock %}
+{% block header %}TimeCrunch<img src="{{ url_for('static', filename='images/wait.svg') }}" class="logo-icon">Viz{% endblock %}
+{% block mode_button %}{% endblock %}
+{% block content %}
+{% endblock %}

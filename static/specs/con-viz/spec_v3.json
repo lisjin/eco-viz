@@ -71,7 +71,8 @@
     {
       "name": "color",
       "type": "ordinal",
-      "range": "category",
+      "range": {"scheme": "orangered-4"},
+      "reverse": true,
       "domain": {"data": "trellis", "field": "region"}
     }
   ],
@@ -82,13 +83,13 @@
 
   "legends": [
     {
-      "stroke": "color",
+      "fill": "color",
       "title": "Region",
       "encode": {
         "symbols": {
           "enter": {
-            "strokeWidth": {"value": 2},
-            "size": {"value": 50}
+            "strokeWidth": {"value": 0},
+            "shape": {"value": "square"}
           }
         }
       }

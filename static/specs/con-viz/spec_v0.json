@@ -62,13 +62,13 @@
 
   "legends": [
     {
-      "stroke": "color",
+      "fill": "color",
       "title": "Type",
       "encode": {
         "symbols": {
           "enter": {
-            "strokeWidth": {"value": 2},
-            "size": {"value": 50}
+            "strokeWidth": {"value": 0},
+            "shape": {"value": "square"}
           }
         }
       }

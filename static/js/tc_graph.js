@@ -1,20 +1,8 @@
 // Total number of nodes in graph
 window.numNodes = 100;
 
-// Mapping from brain region to color (chosen arbitrarily)
-window.regionRGBMap = {
-	'DAN': '239,83,80', // Red
-	'DMN': '255,167,38', // Orange
-	'FPN': '255,238,88', // Yellow
-	'LN': '102,187,106', // Green
-	'SMN': '66,165,245', // Blue
-	'VAN': '92,107,192', // Indigo
-	'VN': '171,71,188', // Violet
-	'': '189,189,189' // Grey (empty string key denotes unlabeled node)
-};
-
 // Mapping for brain region to index
-window.regionCircleMap = {
+window.regionIndexMap = {
 	'DAN': 0,
 	'DMN': 1,
 	'FPN': 2,
@@ -22,14 +10,8 @@ window.regionCircleMap = {
 	'SMN': 4,
 	'VAN': 5,
 	'VN': 6,
-	'': 7
+	'': 9
 };
-
-// Return string of RGB color mapping based on brain region of node
-function getMappedColor(region) {
-	var mappedRGB = window.regionRGBMap[region];
-	return 'rgb(' + mappedRGB + ')';
-}
 
 // Add class to grey out button on click
 function updateTstepButtonClicked($tableSelector, $tstepButton) {
@@ -49,8 +31,8 @@ function updateTicker(sigmaID, strucIndex, strucName, tstepChoice) {
 // Comparator used to sort nodes first by region, then by ID
 function regionCircleCompare(a, b) {
 	var separator = window.numNodes * 10;
-	var aMappedID = window.regionCircleMap[a.region] * separator + parseInt(a.id);
-	var bMappedID = window.regionCircleMap[b.region] * separator + parseInt(b.id);
+	var aMappedID = window.regionIndexMap[a.region] * separator + parseInt(a.id);
+	var bMappedID = window.regionIndexMap[b.region] * separator + parseInt(b.id);
 
 	if (aMappedID < bMappedID)
 		return -1;
@@ -111,7 +93,7 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart) {
 
 			// Update node's size and color based on its degree and brain region, respectively
 			node.size = s.graph.degree(node.id);
-			node.color = getMappedColor(node.region);
+			node.color = vega.scheme('tableau10')[window.regionIndexMap[node.region]];
 		});
 
 		s.refresh();

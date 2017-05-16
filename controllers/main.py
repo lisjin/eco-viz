@@ -36,13 +36,26 @@ def get_nodes(entry, grouped):
 	return nodes_flat[:10]
 
 
-@main.route('/')
-def main_route():
+@main.route('/con-viz')
+def con_route():
 	try:
-		dropdown_mode = int(request.args.get('mode'))
+		mode = int(request.args.get('mode'))
 	except TypeError:
-		dropdown_mode = 1
-	return render_template('index.html', dropdown_mode=dropdown_mode)
+		mode = 1
+	options = {
+		'connectome': True,
+		'dropdown_mode': mode
+	}
+	return render_template('con_viz.html', **options)
+
+
+@main.route('/tc-viz')
+def tc_route():
+	options = {
+		'connectome': False,
+		'dropdown_mode': 1
+	}
+	return render_template('tc_viz.html', **options)
 
 
 @main.route('/data/<path:path>')

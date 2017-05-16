@@ -34,6 +34,13 @@
       "domain": {"data": "table", "field": "amount"},
       "nice": true,
       "range": "height"
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {"data": "table", "field": "amount"},
+      "range": {"scheme": "viridis"},
+      "reverse": true
     }
   ],
 
@@ -54,10 +61,10 @@
           "y2": {"scale": "yscale", "value": 0}
         },
         "update": {
-          "fill": {"value": "#6b486b"}
+          "fill": {"scale": "color", "field": "amount"}
         },
         "hover": {
-          "fill": {"value": "#7b6888"}
+          "fill": {"scale": "color", "field": "amount"}
         }
       }
     },

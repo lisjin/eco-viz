@@ -6,6 +6,15 @@
 	text-align: center;
 }
 
+.header {
+	margin-top: 5%;
+}
+
+.mode-button {
+	position: absolute;
+	top: 5px;
+}
+
 /* Navbar display and docked behavior */
 .navbar {
 	display: block;
@@ -44,6 +53,7 @@
 	top: 0;
 	left: 0;
 	border-bottom: 1px solid #eee;
+	z-index: 11;
 }
 
 .docked-nav .navbar > .container {
@@ -180,33 +190,33 @@ table td span:not(:last-of-type)::after {
 }
 
 .color-legend li[data-type="dan"]::before {
-	color: rgb(239,83,80);
+	color: #4c78a8;
 }
 
 .color-legend li[data-type="dmn"]::before {
-	color: rgb(255,167,38);
+	color: #f58518;
 }
 
 .color-legend li[data-type="fpn"]::before {
-	color: rgb(255,238,88);
+	color: #e45756;
 }
 
 .color-legend li[data-type="ln"]::before {
-	color: rgb(102,187,106);
+	color: #72b7b2;
 }
 
 .color-legend li[data-type="smn"]::before {
-	color: rgb(66,165,245);
+	color: #54a24b;
 }
 
 .color-legend li[data-type="van"]::before {
-	color: rgb(92,107,192);
+	color: #eeca3b;
 }
 
 .color-legend li[data-type="vn"]::before {
-	color: rgb(171,71,188);
+	color: #b279a2;
 }
 
 .color-legend li[data-type="unlabeled"]::before {
-	color: rgb(189,189,189);
+	color: #bab0ac;
 }
