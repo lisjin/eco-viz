@@ -136,6 +136,10 @@ section:first-child {
 	border: 1px solid #e0ded7;
 }
 
+.graph-container.mini {
+	height: 292px;
+}
+
 .ticker {
 	margin-top: 2%;
 }
@@ -144,17 +148,26 @@ section:first-child {
 	font-weight: bold;
 }
 
-table td span:not(:last-of-type)::after {
+.table-wrapper td span:not(:last-of-type)::after {
 	content: " ";
+}
+
+.table-wrapper.tc-view td:first-child span {
+	font-size: 2em;
+}
+
+.table-wrapper.tc-view td:first-child button {
+	width: 38px;
+	padding: 0;
+}
+
+.table-wrapper.tc-view td span:not(:last-of-type)::after {
+	content: ", ";
 }
 
 .table-wrapper {
 	max-height: 500px;
 	overflow-y: scroll;
-}
-
-.table-wrapper th {
-	text-align: center;
 }
 
 .table-wrapper th a {
@@ -170,6 +183,11 @@ table td span:not(:last-of-type)::after {
 
 .tstep-button:hover, .clicked {
 	background-color: #888;
+	color: white;
+}
+
+.button-icon {
+	height: 15px;
 	color: white;
 }
 

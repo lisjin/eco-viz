@@ -30,9 +30,9 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.js"></script>
+	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
-	<script type="text/javascript" src="//vega.github.io/vega-embed/vega-embed.js"></script>
+	<script type="text/javascript" src="//vega.github.io/vega-embed/vega-embed.min.js"></script>
 
 	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
 
@@ -40,9 +40,9 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
 
 	{% block js %}
-	<script type="text/javascript" src="{{ url_for('static', filename='js/con_viz.js') }}" defer></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/con-viz.js') }}" defer></script>
 	{% endblock %}
-	<script type="text/javascript" src="{{ url_for('static', filename='js/tc_graph.js') }}" defer></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/viz-util.js') }}" defer></script>
 </head>
 <body data-dropdown-mode={{ dropdown_mode }}>
 
@@ -153,10 +153,10 @@
 	{% block content %}
 	<div class="row">
 		<div class="one-half column">
-			<h5 class="centered">{% if dropdown_mode == 1 %}Rest{% elif dropdown_mode == 2 %}1{% endif %}</h5>
+			<h5 class="centered">{% if dropdown_mode == 1 and connectome %}Rest{% elif dropdown_mode == 2 %}1{% endif %}</h5>
 		</div>
 		<div class="one-half column">
-			<h5 class="centered">{% if dropdown_mode == 1 %}Mindful Rest{% elif dropdown_mode == 2 %}2{% endif %}</h5>
+			<h5 class="centered">{% if dropdown_mode == 1 and connectome %}Mindful Rest{% elif dropdown_mode == 2 %}2{% endif %}</h5>
 		</div>
 	</div>
 	<section class="no-top">
@@ -224,7 +224,7 @@
 		</div>
 		<div class="row">
 			<div class="table-wrapper one-half column">
-				<table id="tc-table">
+				<table id="tc-table" class="u-full-width">
 					<thead>
 						<tr>
 							<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Struct</a></th>
@@ -236,7 +236,7 @@
 				</table>
 			</div>
 			<div class="table-wrapper one-half column">
-				<table id="tc-table2">
+				<table id="tc-table2" class="u-full-width">
 					<thead>
 						<tr>
 							<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Struct</a></th>
@@ -251,7 +251,7 @@
 	</section>
 	{% endblock %}
 </div>
-
+{% block mustache %}
 {% raw %}
 <script type="x-tmpl-mustache" id="tc-table-template">
 	<tbody id="tc-table-data">
@@ -278,6 +278,7 @@
 	</tbody>
 </script>
 {% endraw %}
+{% endblock %}
 
 <!-- End Document
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->

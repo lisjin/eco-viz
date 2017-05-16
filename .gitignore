@@ -4,7 +4,7 @@ venv/
 preprocess/tmodels/
 
 *.json
-!static/specs/*-viz/*.json
+!static/specs/*.json
 *.pyc
 
 .env

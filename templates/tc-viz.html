@@ -1,0 +1,72 @@
+{% extends "con-viz.html" %}
+{% block title %}TimeCrunch Viz{% endblock %}
+{% block js %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/tc-viz.js') }}" defer></script>
+{% endblock %}
+{% block header %}TimeCrunch<img src="{{ url_for('static', filename='images/wait.svg') }}" class="logo-icon">Viz{% endblock %}
+{% block mode_button %}{% endblock %}
+{% block content %}
+<section>
+	<div class="row">
+		<h6 class="centered header-upper">2. Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired time step under 'Time step(s)' column of table below to toggle graph visualization. (First time step of first structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+	</div>
+	<div class="row color-legend">
+		<ul class="one column offset-by-two"><li data-type="dan">DAN</li></ul>
+		<ul class="one column"><li data-type="dmn">DMN</li></ul>
+		<ul class="one column"><li data-type="fpn">FPN</li></ul>
+		<ul class="one column"><li data-type="ln">LN</li></ul>
+		<ul class="one column"><li data-type="smn">SMN</li></ul>
+		<ul class="one column"><li data-type="van">VAN</li></ul>
+		<ul class="one column"><li data-type="vn">VN</li></ul>
+		<ul class="two columns"><li data-type="unlabeled">Unlabeled</li></ul>
+	</div>
+	<div class="row">
+		<div class="table-wrapper tc-view">
+			<table id="tc-table" class="u-full-width">
+				<thead>
+					<tr>
+						<th><a data-balloon="Click button to visualize corresponding row" data-balloon-pos="right">View</a></th>
+						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Struct</a></th>
+						<th><a data-balloon="Interval(s) structure was present in" data-balloon-pos="right">Time step(s)</a></th>
+						<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Lab/tot</a></th>
+						<th><a data-balloon="Entropy relative to true labeled node distribution" data-balloon-pos="left">Entropy</a></th>
+					</tr>
+				</thead>
+			</table>
+		</div>
+	</div>
+</section>
+{% endblock %}
+{% block mustache %}
+{% raw %}
+<script type="x-tmpl-mustache" id="tc-table-template">
+	<tbody id="tc-table-data">
+		{{#strucs}}
+		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}}>
+			<td><button class="button-primary js--row-button"><span>&orarr;</span></button></td>
+			<td>{{struc}}</td>
+			<td class="js--tsteps">{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
+			<td>{{num_comps}}/{{num_nodes}}</td>
+			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
+		</tr>
+		{{/strucs}}
+	</tbody>
+</script>
+<script type="x-tmpl-mustache" id="graph-template">
+	<div id="graph-data">
+		{{#tsteps}}
+		{{#first_col}}
+		<div class="row">
+		{{/first_col}}
+			<div class="four columns js--graph-wrapper">
+				<div id="graph-t{{tstep}}" class="graph-container mini"></div>
+				<p class="centered ticker">time step <span class="tstep-ticker">{{tstep}}</span></p>
+			</div>
+		{{#last_col}}
+		</div>
+		{{/last_col}}
+		{{/tsteps}}
+	</div>
+</script>
+{% endraw %}
+{% endblock %}

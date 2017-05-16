@@ -1,8 +1,20 @@
 // Offset, in pixels, of navbar from top of window
 window.navOffsetTop = $('.navbar').offset().top;
 
-// Mode for dropdown menu type
-window.dropdownMode = parseInt($('body').attr('data-dropdown-mode'));
+// Total number of nodes in graph
+window.numNodes = 100;
+
+// Mapping for brain region to index
+window.regionIndexMap = {
+	'DAN': 0,
+	'DMN': 1,
+	'FPN': 2,
+	'LN': 3,
+	'SMN': 4,
+	'VAN': 5,
+	'VN': 6,
+	'': 9
+};
 
 // Toggle 'docked-nav' class based on current offset in relation to navbar
 function scrollListener() {
@@ -20,9 +32,14 @@ function scrollListener() {
 }
 
 // Replace the data URL of specPath located in specID to specURL
-function updateEmbed(specPath, dataURL, specID) {
+function updateEmbed(specPath, dataURL, specID, chartWidth, hideLegend) {
 	$.getJSON(specPath, function(spec) {
+		spec.width = chartWidth;
 		spec.data[0].url = dataURL;
+		if (hideLegend) {
+			delete spec.legends;
+		}
+
 		vega.embed(specID, spec, {}, function(error, result) {
 			if (error) throw error;
 		});
@@ -125,24 +142,15 @@ function constructTraverseDataURL(g, tstepChoice, strucIndex) {
 	'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex;
 }
 
-// Update graph visualization, ticker below, and state of time step button clicked
-function updateGraphTable(g, $tstepButton, sigmaID) {
-	var $parentRow = $tstepButton.parents('tr');
-
-	var tstepChoice = $tstepButton.text();
-	var strucIndex = $parentRow.index();
-	var dataURL = constructTraverseDataURL(g, tstepChoice, strucIndex);
-
-	var strucName = $parentRow.find('td').first().text();
-	var splitStart = $parentRow[0].hasAttribute('data-split-start') ? $parentRow.attr('data-split-start') : '';
-
-	updateSigma(dataURL, sigmaID, strucName, splitStart);
-	updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
-	updateTstepButtonClicked($tstepButton.parents('table'), $tstepButton);
+// Construct the TimeCrunch data URL
+function constructTCDataURL(g) {
+	var stateExpanded = g.state === 'R' ? 'Rest' : 'MindfulRest';
+	return 'data/' + g.subject + '/' + g.subject + '_' + stateExpanded + '+' + g.thresh + '-' + g.tstep + '.json';
 }
 
 // Use mustache.js to update content in table located in tableTemplID with updated data from dataURL
-// Update graph visualizations by using first structure at first time step in updated table
+// Use first structure at first time step in updated table (connectome view) or first row in updated table (TC view) to
+// update graph visualizations
 function updateTable(dataURL, tableTemplID, tableID, g, sigmaID) {
 	$.getJSON(dataURL, function(data) {
 		var output = $('#' + tableID);
@@ -159,100 +167,86 @@ function updateTable(dataURL, tableTemplID, tableID, g, sigmaID) {
 		$('#' + tableID + '-data').remove();
 		$('#' + tableID).append(updatedData);
 
-		var $tstepButton = $('#' + tableID + ' .js--tstep-button').first();
-		updateGraphTable(g, $tstepButton, sigmaID);
+		// Depending on view type, call appropriate function implemented in that view's JS file
+		if (window.viewType === 'con') {
+			var $tstepButton = $('#' + tableID + ' .js--tstep-button').first();
+			updateGraphTable(g, $tstepButton, sigmaID);
+		}
+		else if (window.viewType === 'tc') {
+			var $parentRow = $('.js--row-button').first().parents('tr');
+			updateGraphsTable(g, $parentRow);
+		}
 	});
 }
 
-// Construct the TimeCrunch data URL
-function constructTCDataURL(g) {
-	var stateExpanded = g.state === 'R' ? 'Rest' : 'MindfulRest';
-	return 'data/' + g.subject + '/' + g.subject + '_' + stateExpanded + '+' + g.thresh + '-' + g.tstep + '.json';
+// Comparator used to sort nodes first by region, then by ID
+function regionCircleCompare(a, b) {
+	var separator = window.numNodes * 10;
+	var aMappedID = window.regionIndexMap[a.region] * separator + parseInt(a.id);
+	var bMappedID = window.regionIndexMap[b.region] * separator + parseInt(b.id);
+
+	if (aMappedID < bMappedID)
+		return -1;
+	if (aMappedID > bMappedID)
+		return 1;
+	return 0;
 }
 
-function constructTstepsDataURL(g, g2, rType, rTypeAlt) {
-	return 'api/timesteps/' + g.subject + '_' + g.state + '_' + g.thresh.toString().replace('.', '') + '_' + g.tstep +
-		'/' + g2.subject + '_' + g2.state + '_' + g2.thresh.toString().replace('.', '') + '_' + g2.tstep +
-		'?r_type=' + rType + '&r_type_alt=' + rTypeAlt;
-}
+// For bipartite cores, need average y values of nodes on left and right sides
+function getYAvgVals(sortedNodes, staticStrucName, splitStart) {
+	var yLeftAvg = 0;
+	var yRightAvg = 0;
 
-function updateSingleCol(g, TCDataURL, colSide) {
-	var i = 1 + colSide;
-	var j = 3 + colSide;
-	var k = 5 + colSide;
-
-	var svgID = '#view' + i.toString();
-	$(svgID).empty();
-	updateD3Pie(TCDataURL + '?type=struc_distr', svgID);
-
-	updateEmbed('static/specs/con-viz/spec_v1.json', TCDataURL + '?type=node_distr', '#view' + j.toString());
-	updateEmbed('static/specs/con-viz/spec_v3.json', TCDataURL + '?type=node_distr2', '#view' + k.toString());
-
-	var suffix = colSide === 0 ? '' : 2;
-	updateTable(TCDataURL, 'tc-table' + suffix + '-template', 'tc-table' + suffix, g, 'graph' + suffix);
-}
-
-// Update charts, tables, and graph visualizations based on new dropdown menu selections
-function tcInputListener() {
-	var g = getGraphParams('');
-	var g2 = window.dropdownMode === 1 ? Object.assign({}, g) : getGraphParams('2');
-
-	if (window.dropdownMode === 1) {
-		g.state = 'R';
-		g2.state = 'MR';
+	if (staticStrucName === 'bc') {
+		sortedNodes.forEach(function(node, i, a) {
+			yLeftAvg += (i < splitStart) ? i / splitStart : 0;
+			yRightAvg += (i >= splitStart) ? (i - splitStart) / (a.length - splitStart) : 0;
+		});
+		yLeftAvg /= splitStart;
+		yRightAvg /= (sortedNodes.length - splitStart);
+		return {left: yLeftAvg, right: yRightAvg};
 	}
+	return {};
+}
 
-	var lTCDataURL = constructTCDataURL(g);
-	var rTCDataURL = constructTCDataURL(g2);
-
-	var rType = window.dropdownMode === 1 ? 'Rest' : '1';
-	var rTypeAlt = window.dropdownMode === 1 ? 'Mindful%20Rest' : '2';
-
-	var tstepsDataURL = constructTstepsDataURL(g, g2, rType, rTypeAlt);
-
-	updateEmbed('static/specs/con-viz/spec_v0.json', tstepsDataURL, '#view0');
-
-	if (window.dropdownMode === 2 && !$.isWindow(this)) {
-		var colSide = $(this).attr('id').indexOf('2') > -1 ? 1 : 0;
-
-		if (colSide === 0) {
-			updateSingleCol(g, lTCDataURL, colSide);
+// Update the sigma instance located in sigmaID with new dataURL source for graph
+function updateSigma(dataURL, sigmaID, strucName, splitStart) {
+	$('#' + sigmaID).empty();
+	var s = new sigma({
+		container: sigmaID,
+		renderer: {
+			container: document.getElementById(sigmaID),
+			type: 'canvas'
+		},
+		settings: {
+			minNodeSize: 3,
+			maxNodeSize: 7
 		}
-		else if (colSide === 1) {
-			updateSingleCol(g2, rTCDataURL, colSide);
-		}
-	}
-	else {
-		updateSingleCol(g, lTCDataURL, 0);
-		updateSingleCol(g2, rTCDataURL, 1);
-	}
+	});
+
+	sigma.parsers.json(dataURL, s, function(s) {
+		var staticStrucName = strucName.substring(1);
+		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
+		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
+
+		sortedNodes.forEach(function(node, i, a) {
+			if (staticStrucName === 'bc') {
+				// Initialize node's position in a vertical line on left or right side
+				node.x = (i < splitStart) ? 0 : 1;
+				node.y = (i < splitStart) ? (i / splitStart) - yAvgVals.left
+					: (i - splitStart) / (a.length - splitStart) - yAvgVals.right;
+			}
+			else if (staticStrucName === 'fc') {
+				// Initialize node's position to point along a circle
+				node.x = Math.cos(Math.PI * 2 * i / a.length);
+				node.y = Math.sin(Math.PI * 2 * i / a.length);
+			}
+
+			// Update node's size and color based on its degree and brain region, respectively
+			node.size = s.graph.degree(node.id);
+			node.color = vega.scheme('tableau10')[window.regionIndexMap[node.region]];
+		});
+
+		s.refresh();
+	});
 }
-
-// Update graph visualizations based on content of clicked time step button
-function tstepButtonListener() {
-	var g = getGraphParams('');
-	var $tstepButton = $(this);
-	var sigmaID = $(this).parents('table').is('#tc-table') ? 'graph' : 'graph2';
-
-	if (window.dropdownMode === 1) {
-		g['state'] = $(this).parents('table').is('#tc-table') ? 'R' : 'MR';
-	}
-
-	updateGraphTable(g, $tstepButton, sigmaID);
-}
-
-$(function() {
-	// If the viewport is wider than tablet size (750px), dock navbar on scroll
-	if ($(window).width() > 750) {
-		$(window).on('scroll', scrollListener);
-	}
-
-	// Initialize Vega charts, D3 pie charts, and table with data
-	tcInputListener();
-
-	// Listen for user selection from dropdown menus
-	$('.navbar-item select').change(tcInputListener);
-
-	// Listen for user click of time step buttons
-	$('#tc-table, #tc-table2').on('click', '.js--tstep-button', tstepButtonListener);
-});

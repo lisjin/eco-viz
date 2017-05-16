@@ -46,7 +46,7 @@ def con_route():
 		'connectome': True,
 		'dropdown_mode': mode
 	}
-	return render_template('con_viz.html', **options)
+	return render_template('con-viz.html', **options)
 
 
 @main.route('/tc-viz')
@@ -55,7 +55,7 @@ def tc_route():
 		'connectome': False,
 		'dropdown_mode': 1
 	}
-	return render_template('tc_viz.html', **options)
+	return render_template('tc-viz.html', **options)
 
 
 @main.route('/data/<path:path>')
