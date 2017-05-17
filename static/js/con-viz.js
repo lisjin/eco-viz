@@ -33,7 +33,7 @@ function updateGraphTable(g, $tstepButton, sigmaID) {
 	var strucIndex = $parentRow.index();
 	var dataURL = constructTraverseDataURL(g, tstepChoice, strucIndex);
 
-	var strucName = $parentRow.find('td').first().text();
+	var strucName = $parentRow.find('td.js--struc').text();
 	var splitStart = $parentRow[0].hasAttribute('data-split-start') ? $parentRow.attr('data-split-start') : '';
 
 	updateSigma(dataURL, sigmaID, strucName, splitStart);

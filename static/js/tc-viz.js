@@ -3,11 +3,6 @@ window.dropdownMode = 2;
 
 window.viewType = 'tc';
 
-window.numOffsetMap = {
-	1: 'four',
-	2: 'two'
-}
-
 function constructTstepsDataURL(g, rType) {
 	return 'api/timesteps/' + g.subject + '_' + g.state + '_' + g.thresh.toString().replace('.', '') + '_' + g.tstep +
 		'?r_type=' + rType;
@@ -23,29 +18,35 @@ function tcInputListener() {
 	updateTable(TCDataURL, 'tc-table-template', 'tc-table', g, 'graph');
 }
 
-function getColOffset(i, arrLength) {
-	if (arrLength % 3 > 0 && i % 3 === 0 && i >= arrLength - 3) {
-		console.log(i);
-		return window.numOffsetMap[arrLength % 3];
-	}
-	return ''
+function updateRowClicked($parentRow) {
+	$('tr.clicked').removeClass('clicked');
+	$parentRow.addClass('clicked');
+}
+
+function updateTicker(strucIndex, strucName) {
+	var $ticker = $('.ticker');
+
+	$ticker.find('.struc-ticker').html(strucIndex + 1);
+	$ticker.find('.struc-name').html(strucName);
 }
 
 // Update graph visualization, ticker below, and state of time step button clicked
 function updateGraphsTable(g, $parentRow) {
 	var strucIndex = $parentRow.index();
-	var strucName = $parentRow.find('td:nth-child(2)').text();
+	var strucName = $parentRow.find('td.js--struc').text();
 	var splitStart = $parentRow[0].hasAttribute('data-split-start') ? $parentRow.attr('data-split-start') : '';
 	var timeSteps = jQuery.makeArray($parentRow.find('td.js--tsteps span')).map(function(el) { return el.innerHTML; });
+
+	updateRowClicked($parentRow);
 
 	// Create the object we feed to mustache.js
 	var tsteps = [];
 	timeSteps.forEach(function(tstep, i, a) {
 		tsteps.push({
-			'first_col': i % 3 === 0,
 			'tstep': tstep,
+			'first_col': i % 3 === 0,
 			'last_col': (i + 1) % 3 === 0,
-			'offset': getColOffset(i, a.length)
+			'oneshot': a.length === 1
 		});
 	});
 
@@ -54,6 +55,7 @@ function updateGraphsTable(g, $parentRow) {
 	var updatedData = Mustache.render(template, { "tsteps": tsteps });
 	$('#graph-data').remove();
 	$(updatedData).prependTo($('.table-wrapper').parent()).each(function() {
+		updateTicker(strucIndex, strucName);
 		$(this).find('.js--graph-wrapper .graph-container').each(function() {
 			var graphID = $(this).attr('id');
 			var tstep = graphID.match(/\d+/g)[0];
@@ -68,7 +70,7 @@ function updateGraphsTable(g, $parentRow) {
 function rowButtonListener() {
 	var g = getGraphParams('');
 	var $parentRow = $(this).parents('tr');
-	
+
 	updateGraphsTable(g, $parentRow);
 }
 

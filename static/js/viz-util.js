@@ -158,11 +158,13 @@ function updateTable(dataURL, tableTemplID, tableID, g, sigmaID) {
 		
 		expandRangedTsteps(data);
 
+		var index = 1;
 		var updatedData = Mustache.render(template, {
-			"strucs": data,
+			'strucs': data,
 			toFixed: function() {
 				return function(num, render) { return parseFloat(render(num)).toFixed(4); }
-			}
+			},
+			index: function() { return index++; }
 		});
 		$('#' + tableID + '-data').remove();
 		$('#' + tableID).append(updatedData);

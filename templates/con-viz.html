@@ -229,6 +229,7 @@
 				<table id="tc-table" class="u-full-width">
 					<thead>
 						<tr>
+							<th></th>
 							<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Struct</a></th>
 							<th><a data-balloon="Interval(s) structure was present in" data-balloon-pos="right">Time step(s)</a></th>
 							<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Lab/tot</a></th>
@@ -241,6 +242,7 @@
 				<table id="tc-table2" class="u-full-width">
 					<thead>
 						<tr>
+							<th></th>
 							<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Struct</a></th>
 							<th><a data-balloon="Interval(s) structure was present in" data-balloon-pos="right">Time step(s)</a></th>
 							<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Lab/tot</a></th>
@@ -259,7 +261,8 @@
 	<tbody id="tc-table-data">
 		{{#strucs}}
 		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}}>
-			<td>{{struc}}</td>
+			<td>{{index}}</td>
+			<td class="js--struc">{{struc}}</td>
 			<td>{{#tsteps}}<span><button class="tstep-button js--tstep-button">{{.}}</button></span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
 			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
@@ -271,7 +274,8 @@
 	<tbody id="tc-table2-data">
 		{{#strucs}}
 		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}}>
-			<td>{{struc}}</td>
+			<td>{{index}}</td>
+			<td class="js--struc">{{struc}}</td>
 			<td>{{#tsteps}}<span><button class="tstep-button js--tstep-button">{{.}}</button></span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
 			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
