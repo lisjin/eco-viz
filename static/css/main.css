@@ -144,6 +144,10 @@ section:first-child {
 	height: 292px;
 }
 
+#graph-data .ticker {
+	margin-top: 0;
+}
+
 .ticker {
 	margin-top: 2%;
 }

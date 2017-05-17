@@ -6,6 +6,14 @@
 {% block header %}TimeCrunch<img src="{{ url_for('static', filename='images/wait.svg') }}" class="logo-icon">Viz{% endblock %}
 {% block mode_button %}{% endblock %}
 {% block content %}
+<section class="no-top">
+	<div class="row">
+		<h6 class="centered header-upper">1. Graph sparsity <span class="subtext">over time</span><span class="tooltip"><a data-balloon="Graph sparsity is defined as: (|V| &times; (|V| - 1) - 2 &times; |E|) / |V| &times; (|V| - 1). Select from 'interpolate' dropdown menu to change line curvature." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+	</div>
+	<div class="row">
+		<div class="centered" id="view0"></div>
+	</div>
+</section>
 <section>
 	{% block graph_header %}
 		{{ super() }}
@@ -53,7 +61,7 @@
 		{{/first_col}}
 			<div class="{{#oneshot}}offset-by-three six{{/oneshot}}{{^oneshot}}four{{/oneshot}} columns js--graph-wrapper">
 				<div id="graph-t{{tstep}}" class="graph-container mini-{{#oneshot}}6{{/oneshot}}{{^oneshot}}4{{/oneshot}}"></div>
-				<p class="centered ticker">time step <span class="tstep-ticker">{{tstep}}</span></p>
+				<p class="centered ticker">t = <span class="tstep-ticker">{{tstep}}</span></p>
 			</div>
 		{{#last_col}}
 		</div>

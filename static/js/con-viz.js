@@ -3,13 +3,6 @@ window.dropdownMode = parseInt($('body').attr('data-dropdown-mode'));
 
 window.viewType = 'con';
 
-// Construct the API URL used to fetch time step JSON
-function constructTstepsDataURL(g, g2, rType, rTypeAlt) {
-	return 'api/timesteps/' + g.subject + '_' + g.state + '_' + g.thresh.toString().replace('.', '') + '_' + g.tstep +
-		'/' + g2.subject + '_' + g2.state + '_' + g2.thresh.toString().replace('.', '') + '_' + g2.tstep +
-		'?r_type=' + rType + '&r_type_alt=' + rTypeAlt;
-}
-
 // Add class to grey out button on click
 function updateTstepButtonClicked($tableSelector, $tstepButton) {
 	$tableSelector.find('.js--tstep-button.clicked').removeClass('clicked');
@@ -82,10 +75,6 @@ function tcInputListener() {
 	var rType = window.dropdownMode === 1 ? 'Rest' : '1';
 	var rTypeAlt = window.dropdownMode === 1 ? 'Mindful%20Rest' : '2';
 
-	// Construct the API URL used to fetch time step JSON, then inject into HTML element
-	var tstepsDataURL = constructTstepsDataURL(g, g2, rType, rTypeAlt);
-	updateEmbed('static/specs/spec_v0.json', tstepsDataURL, '#view0', 700, false);
-
 	// For double-column dropdown menus, update only the column whose dropdown was changed
 	// Otherwise, update both columns simultaneously
 	if (window.dropdownMode === 2 && !$.isWindow(this)) {
@@ -106,9 +95,10 @@ function tcInputListener() {
 
 // Update graph visualizations based on content of clicked time step button
 function tstepButtonListener() {
-	var g = getGraphParams('');
 	var $tstepButton = $(this);
 	var sigmaID = $(this).parents('table').is('#tc-table') ? 'graph' : 'graph2';
+	var suffix = sigmaID.indexOf('2') > -1 ? '2' : '';
+	var g = getGraphParams(suffix);
 
 	// For single-column dropdown menu, set the left column as 'Rest' and right as 'Mindful Rest'
 	if (window.dropdownMode === 1) {

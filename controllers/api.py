@@ -80,19 +80,8 @@ def traverse_route(graph_name):
 	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
 
-@api.route('/api/timesteps/<graph_name>/<graph_name_alt>')
-def timesteps_route(graph_name, graph_name_alt):
-	r_type = request.args.get('r_type')
-	r_type_alt = request.args.get('r_type_alt')
-
-	c1 = get_tsteps_count(graph_name, r_type)
-	c2 = get_tsteps_count(graph_name_alt, r_type_alt)
-	results = [c for c in c1] + [c for c in c2]
-	return jsonify(results)
-
-
 @api.route('/api/timesteps/<graph_name>')
-def timesteps_single_route(graph_name):
+def timesteps_route(graph_name):
 	r_type = request.args.get('r_type')
 
 	c = get_tsteps_count(graph_name, r_type)

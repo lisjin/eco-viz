@@ -45,7 +45,7 @@ function updateGraphsTable(g, $parentRow) {
 		tsteps.push({
 			'tstep': tstep,
 			'first_col': i % 3 === 0,
-			'last_col': (i + 1) % 3 === 0,
+			'last_col': (i + 1) % 3 === 0 || a.length < 3 && i === a.length - 1,
 			'oneshot': a.length === 1
 		});
 	});
