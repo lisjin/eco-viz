@@ -199,8 +199,9 @@
 		</div>
 	</section>
 	<section>
+		{% block graph_header %}
 		<div class="row">
-			<h6 class="centered header-upper">5. Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired time step under 'Time step(s)' column of table below to toggle graph visualization. (First time step of first structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">{% if connectome %}5. {% else %}2. {% endif %}Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired time step under 'Time step(s)' column of table below to toggle graph visualization. (First time step of first structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row color-legend">
 			<ul class="one column offset-by-two"><li data-type="dan">DAN</li></ul>
@@ -212,6 +213,7 @@
 			<ul class="one column"><li data-type="vn">VN</li></ul>
 			<ul class="two columns"><li data-type="unlabeled">Unlabeled</li></ul>
 		</div>
+		{% endblock %}
 		<div class="row">
 			<div class="one-half column">
 				<div id="graph" class="graph-container"></div>

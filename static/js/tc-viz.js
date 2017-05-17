@@ -3,6 +3,11 @@ window.dropdownMode = 2;
 
 window.viewType = 'tc';
 
+window.numOffsetMap = {
+	1: 'four',
+	2: 'two'
+}
+
 function constructTstepsDataURL(g, rType) {
 	return 'api/timesteps/' + g.subject + '_' + g.state + '_' + g.thresh.toString().replace('.', '') + '_' + g.tstep +
 		'?r_type=' + rType;
@@ -18,6 +23,14 @@ function tcInputListener() {
 	updateTable(TCDataURL, 'tc-table-template', 'tc-table', g, 'graph');
 }
 
+function getColOffset(i, arrLength) {
+	if (arrLength % 3 > 0 && i % 3 === 0 && i >= arrLength - 3) {
+		console.log(i);
+		return window.numOffsetMap[arrLength % 3];
+	}
+	return ''
+}
+
 // Update graph visualization, ticker below, and state of time step button clicked
 function updateGraphsTable(g, $parentRow) {
 	var strucIndex = $parentRow.index();
@@ -31,7 +44,8 @@ function updateGraphsTable(g, $parentRow) {
 		tsteps.push({
 			'first_col': i % 3 === 0,
 			'tstep': tstep,
-			'last_col': (i + 1) % 3 === 0
+			'last_col': (i + 1) % 3 === 0,
+			'offset': getColOffset(i, a.length)
 		});
 	});
 
