@@ -49,8 +49,7 @@ function updateGraphs(g, strucIndex, strucName, splitStart, timeSteps) {
 	});
 
 	// Append the newly created graph elements to DOM, then fill them with data
-	var template = $('#graph-template').html();
-	var updatedData = Mustache.render(template, {
+	var updatedData = Mustache.render($('#graph-template').html(), {
 		'tsteps': tsteps,
 		'col_width': colWidth,
 		'half': timeSteps.length < 3,
@@ -59,25 +58,23 @@ function updateGraphs(g, strucIndex, strucName, splitStart, timeSteps) {
 
 	$(updatedData).appendTo($('#target-row')).each(function() {
 		updateTicker(strucIndex, strucName);
-		$(this).find('.js--graph-wrapper .graph-container').each(function() {
+		$(this).find('.js--graph-wrapper .graph-container').each(function(i, val) {
 			var graphID = $(this).attr('id');
 			var tstep = graphID.match(/\d+/g)[0];
 			var dataURL = constructTraverseDataURL(g, tstep, strucIndex);
 
-			updateSigma(dataURL, graphID, strucName, splitStart);
+			var updateLegend = (i === 0);
+			updateSigma(dataURL, graphID, strucName, splitStart, updateLegend);
 		});
 	});
 }
 
 function updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps) {
-	$('.color-legend').addClass('hidden');
-
-	var tickerHTML =
-		'<p class="centered ticker">' +
-			'<span class="struc-name"></span> (structure <span class="struc-ticker"></span>)' +
-		'</p>';
+	var tickerHTML = Mustache.render($('#ticker-template').html(), {
+		'struc_name': strucName,
+		'struc_index': strucIndex
+	});
 	$(tickerHTML).appendTo('#target-row');
-	updateTicker(strucIndex, strucName);
 
 	var numNodes = parseInt($parentRow.attr('data-num-nodes'));
 	var numCols = numNodes > 50 ? 1 : (numNodes > 30 ? 2 : 3);
@@ -87,31 +84,35 @@ function updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps) {
 		var rowID = 'row-' + (Math.floor(i / numCols)).toString();
 
 		if (i % numCols === 0) {
-			$('<div class="row" id="' + rowID + '">').appendTo('#target-row');
+			$(Mustache.render($('#matrix-row-template').html(), { 'row_id': rowID })).appendTo('#target-row');
 		}
 
 		var elID = 'view' + tstep.toString();
-		var newHTML =
-			'<div class="' + colWidth + ' columns">' +
-				'<div id="' + elID + '"></div>' +
-				'<p class="centered ticker">t = <span class="tstep-ticker">' + tstep.toString() + '</span></p>' +
-			'</div>';
+		var matrixHTML = Mustache.render($('#matrix-template').html(), {
+			'col_width': colWidth,
+			'el_id': elID,
+			'tstep': tstep
+		});
 		var traverseDataURL = constructTraverseDataURL(g, tstep, strucIndex);
 
-		$(newHTML).appendTo('#' + rowID).each(function() {
-			updateEmbed('static/specs/spec_v5.json', traverseDataURL, '#' + elID, 292, false);
+		if (i === 0) {
+			$.getJSON(traverseDataURL, function(data) {
+				var regionSet = new Set();
+				data.nodes.forEach(function(node, i, a) {
+					regionSet.add(node.region);
+				});
+				updateColorLegend(regionSet, false);
+			});
+		}
+
+		$(matrixHTML).appendTo('#' + rowID).each(function() {
+			updateEmbed('static/specs/spec_v5.json', traverseDataURL, '#' + elID, 305, false);
 		});
 	});
 }
 
-function updateRowButtonClicked($rowButton) {
-	
-}
-
 // Update graph visualization, ticker below, and state of time step button clicked
 function updateGraphsTable(g, $rowButton) {
-	$('.color-legend').removeClass('hidden');
-
 	var $parentRow = $rowButton.parents('tr');
 
 	var strucIndex = $parentRow.index();

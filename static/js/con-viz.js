@@ -29,7 +29,7 @@ function updateGraphTable(g, $tstepButton, sigmaID) {
 	var strucName = $parentRow.find('td.js--struc').text();
 	var splitStart = $parentRow[0].hasAttribute('data-split-start') ? $parentRow.attr('data-split-start') : '';
 
-	updateSigma(dataURL, sigmaID, strucName, splitStart);
+	updateSigma(dataURL, sigmaID, strucName, splitStart, true);
 	updateTicker(sigmaID, strucIndex, strucName, tstepChoice);
 	updateTstepButtonClicked($tstepButton.parents('table'), $tstepButton);
 }

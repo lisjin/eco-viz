@@ -171,7 +171,7 @@ section:first-child {
 }
 
 .table-wrapper tr.clicked {
-	color: #0fa0ce;
+	color: #33c3f0;
 	font-weight: bold;
 }
 
@@ -225,40 +225,4 @@ section:first-child {
 	.color-legend ul {
 		white-space: nowrap;
 	}
-}
-
-.color-legend li::before {
-	content: "\02588\0020";
-}
-
-.color-legend li[data-type="dan"]::before {
-	color: #4c78a8;
-}
-
-.color-legend li[data-type="dmn"]::before {
-	color: #f58518;
-}
-
-.color-legend li[data-type="fpn"]::before {
-	color: #e45756;
-}
-
-.color-legend li[data-type="ln"]::before {
-	color: #72b7b2;
-}
-
-.color-legend li[data-type="smn"]::before {
-	color: #54a24b;
-}
-
-.color-legend li[data-type="van"]::before {
-	color: #eeca3b;
-}
-
-.color-legend li[data-type="vn"]::before {
-	color: #b279a2;
-}
-
-.color-legend li[data-type="unlabeled"]::before {
-	color: #bab0ac;
 }

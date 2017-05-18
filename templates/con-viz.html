@@ -195,17 +195,9 @@
 		<div class="row">
 			<h6 class="centered header-upper">Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired {{'time step' if connectome else 'row'}} under '{{ 'Time step(s)' if connnectome else 'View' }}' column of table below to toggle graph visualization. (First {% if connectome %}time step of first {% endif %}structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
-		<div class="row color-legend">
-			<ul class="one column offset-by-two"><li data-type="dan">DAN</li></ul>
-			<ul class="one column"><li data-type="dmn">DMN</li></ul>
-			<ul class="one column"><li data-type="fpn">FPN</li></ul>
-			<ul class="one column"><li data-type="ln">LN</li></ul>
-			<ul class="one column"><li data-type="smn">SMN</li></ul>
-			<ul class="one column"><li data-type="van">VAN</li></ul>
-			<ul class="one column"><li data-type="vn">VN</li></ul>
-			<ul class="two columns"><li data-type="unlabeled">Unlabeled</li></ul>
-		</div>
 		{% endblock %}
+		<div class="row color-legend js--color-legend">
+		</div>
 		<div class="row">
 			<div class="one-half column">
 				<div id="graph" class="graph-container"></div>
@@ -277,6 +269,14 @@
 </script>
 {% endraw %}
 {% endblock %}
+
+{% raw %}
+<script type="x-tmpl-mustache" id="color-legend-template">
+	{{#strucs}}
+	<ul class="one column {{#offset}}offset-by-{{offset}}{{/offset}}"><li><span style="color: {{struc_color}};">&block;</span> {{struc_name}}</li></ul>
+	{{/strucs}}
+</script>
+{% endraw %}
 
 <!-- End Document
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->

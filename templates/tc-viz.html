@@ -55,6 +55,11 @@
 		{{/strucs}}
 	</tbody>
 </script>
+<script type="x-tmpl-mustache" id="ticker-template">
+	<p class="centered ticker">
+		<span class="struc-name">{{struc_name}}</span> (structure <span class="struc-ticker">{{struc_index}}</span>)
+	</p>
+</script>
 <script type="x-tmpl-mustache" id="graph-template">
 	<div id="graph-data">
 		<p class="centered ticker"><span class="struc-name"></span> (structure <span class="struc-ticker"></span>)</p>
@@ -70,6 +75,15 @@
 		</div>
 		{{/last_col}}
 		{{/tsteps}}
+	</div>
+</script>
+<script type='x-tmpl-mustache' id='matrix-row-template'>
+	<div class="row" id="{{row_id}}"></div>
+</script>
+<script type='x-tmpl-mustache' id='matrix-template'>
+	<div class="{{col_width}} columns">
+		<div id={{el_id}}></div>
+		<p class="centered ticker">t = <span class="tstep-ticker">{{tstep}}</span></p>
 	</div>
 </script>
 {% endraw %}

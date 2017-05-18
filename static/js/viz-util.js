@@ -16,6 +16,13 @@ window.regionIndexMap = {
 	'': 9
 };
 
+window.intWordMap = {
+	2: 'two',
+	3: 'three',
+	4: 'four',
+	5: 'five'
+}
+
 // Toggle 'docked-nav' class based on current offset in relation to navbar
 function scrollListener() {
 	var scrollTop = $(window).scrollTop();
@@ -56,6 +63,8 @@ function updateEmbed(specPath, dataURL, specID, chartWidth, hideLegend) {
 
 		vega.embed(specID, spec, opt, function(error, result) {
 			if (error) { console.error(error); };
+
+			var runtimeData = result.view._runtime.data;
 		});
 	});
 }
@@ -167,13 +176,10 @@ function constructTCDataURL(g) {
 // update graph visualizations
 function updateTable(dataURL, tableTemplID, tableID, g, sigmaID) {
 	$.getJSON(dataURL, function(data) {
-		var output = $('#' + tableID);
-		var template = $('#' + tableTemplID).html();
-		
 		expandRangedTsteps(data);
 
 		var index = 1;
-		var updatedData = Mustache.render(template, {
+		var updatedData = Mustache.render($('#' + tableTemplID).html(), {
 			'strucs': data,
 			toFixed: function() {
 				return function(num, render) { return parseFloat(render(num)).toFixed(4); }
@@ -225,8 +231,28 @@ function getYAvgVals(sortedNodes, staticStrucName, splitStart) {
 	return {};
 }
 
+function updateColorLegend(regionSet, isGraph) {
+	var strucs = [];
+	var regionArr = Array.from(regionSet);
+	regionArr.sort();
+
+	regionArr.forEach(function(val, i, a) {
+		strucs.push({
+			'struc_color': isGraph ? vega.scheme('tableau10')[window.regionIndexMap[val]] : vega.scheme('set2')[i],
+			'struc_name': val ? val : 'N/A',
+			'offset': i === 0 ? window.intWordMap[Math.floor((12 - regionSet.size) / 2)] : ''
+		});
+	});
+
+	$('.js--color-legend').empty();
+	var colorLegendHTML = Mustache.render($('#color-legend-template').html(), {
+		'strucs': strucs
+	});
+	$(colorLegendHTML).appendTo('.js--color-legend');
+}
+
 // Update the sigma instance located in sigmaID with new dataURL source for graph
-function updateSigma(dataURL, sigmaID, strucName, splitStart) {
+function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 	$('#' + sigmaID).empty();
 	var s = new sigma({
 		container: sigmaID,
@@ -245,6 +271,7 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart) {
 		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
 		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
 
+		var regionSet = new Set();
 		sortedNodes.forEach(function(node, i, a) {
 			if (staticStrucName === 'bc') {
 				// Initialize node's position in a vertical line on left or right side
@@ -261,7 +288,15 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart) {
 			// Update node's size and color based on its degree and brain region, respectively
 			node.size = s.graph.degree(node.id);
 			node.color = vega.scheme('tableau10')[window.regionIndexMap[node.region]];
+
+			if (updateLegend) {
+				regionSet.add(node.region);
+			}
 		});
+
+		if (updateLegend) {
+			updateColorLegend(regionSet, true);
+		}
 
 		s.refresh();
 	});
