@@ -28,7 +28,7 @@
   "data": [
     {
       "name": "table",
-      "url": "api/timesteps/MH01_R_030_12/MH01_MR_030_12?r_type=Rest&r_type_alt=Mindful%20Rest"
+      "url": "api/timesteps/MH01_R_030_12/MH01_MR_030_12?r_type=Rest&r_type_alt=Mindful%20Rest?index=0"
     }
   ],
 

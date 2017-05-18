@@ -8,7 +8,7 @@
 {% block content %}
 <section class="no-top">
 	<div class="row">
-		<h6 class="centered header-upper">1. Graph sparsity <span class="subtext">over time</span><span class="tooltip"><a data-balloon="Graph sparsity is defined as: (|V| &times; (|V| - 1) - 2 &times; |E|) / |V| &times; (|V| - 1). Select from 'interpolate' dropdown menu to change line curvature." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+		<h6 class="centered header-upper">Graph sparsity <span class="subtext">over time</span><span class="tooltip"><a data-balloon="Graph sparsity is defined as: (|V| &times; (|V| - 1) - 2 &times; |E|) / |V| &times; (|V| - 1). Select from 'interpolate' dropdown menu to change line curvature." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 	</div>
 	<div class="row">
 		<div class="centered" id="view0"></div>
@@ -18,17 +18,19 @@
 	{% block graph_header %}
 		{{ super() }}
 	{% endblock %}
+	<div id="target-row"></div>
 	<div class="row">
 		<div class="table-wrapper tc-view">
 			<table id="tc-table" class="u-full-width">
 				<thead>
 					<tr>
 						<th></th>
-						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Struct</a></th>
+						<th><a data-balloon="Spatio-temporal structure" data-balloon-pos="right">Structure</a></th>
 						<th><a data-balloon="Interval(s) structure was present in" data-balloon-pos="right">Time step(s)</a></th>
-						<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Lab/tot</a></th>
+						<th><a data-balloon="# labeled out of total nodes" data-balloon-pos="left">Labeled/total</a></th>
 						<th><a data-balloon="Entropy relative to true labeled node distribution" data-balloon-pos="left">Entropy</a></th>
-						<th><a data-balloon="Click button to visualize corresponding row" data-balloon-pos="right">View</a></th>
+						<th><a data-balloon="Click button to visualize graphs of corresponding row" data-balloon-pos="left">Graphs</a></th>
+						<th><a data-balloon="Click button to visualize matrices of corresponding row" data-balloon-pos="left">Matrices</a></th>
 					</tr>
 				</thead>
 			</table>
@@ -41,13 +43,14 @@
 <script type="x-tmpl-mustache" id="tc-table-template">
 	<tbody id="tc-table-data">
 		{{#strucs}}
-		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}}>
+		<tr {{#split_start}}data-split-start="{{split_start}}"{{/split_start}} data-num-nodes="{{num_nodes}}">
 			<td>{{index}}</td>
 			<td class="js--struc">{{struc}}</td>
 			<td class="js--tsteps">{{#tsteps}}<span>{{.}}</span>{{/tsteps}}</td>
 			<td>{{num_comps}}/{{num_nodes}}</td>
 			<td>{{#toFixed}}{{cross_entropy}}{{/toFixed}}</td>
-			<td><button class="button-primary js--row-button"><span>&orarr;</span></button></td>
+			<td><button class="js--row-button graph-button"><span>&orarr;</span></button></td>
+			<td><button class="js--row-button matrix-button"><span>&orarr;</span></button></td>
 		</tr>
 		{{/strucs}}
 	</tbody>
@@ -59,8 +62,8 @@
 		{{#first_col}}
 		<div class="row">
 		{{/first_col}}
-			<div class="{{#oneshot}}offset-by-three six{{/oneshot}}{{^oneshot}}four{{/oneshot}} columns js--graph-wrapper">
-				<div id="graph-t{{tstep}}" class="graph-container mini-{{#oneshot}}6{{/oneshot}}{{^oneshot}}4{{/oneshot}}"></div>
+			<div class="{{col_width}} columns {{#one_shot}}offset-by-three{{/one_shot}} js--graph-wrapper">
+				<div id="graph-t{{tstep}}" class="graph-container mini-{{#half}}6{{/half}}{{^half}}4{{/half}}"></div>
 				<p class="centered ticker">t = <span class="tstep-ticker">{{tstep}}</span></p>
 			</div>
 		{{#last_col}}

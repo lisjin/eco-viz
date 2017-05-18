@@ -1,5 +1,5 @@
-.vega-actions {
-	display: none;
+.container.wide {
+	max-width: 1000px;
 }
 
 .centered {
@@ -13,6 +13,10 @@
 .mode-button {
 	position: absolute;
 	top: 5px;
+}
+
+.hidden {
+	display: none;
 }
 
 /* Navbar display and docked behavior */
@@ -137,11 +141,11 @@ section:first-child {
 }
 
 .graph-container.mini-6 {
-	height: 459px;
+	height: 478px;
 }
 
 .graph-container.mini-4 {
-	height: 292px;
+	height: 305px;
 }
 
 #graph-data .ticker {
@@ -160,17 +164,14 @@ section:first-child {
 	content: " ";
 }
 
-.table-wrapper.tc-view td:last-child span {
-	font-size: 2em;
-}
-
-.table-wrapper.tc-view td:last-child button {
+.graph-button, .matrix-button {
+	font-size: 1.5em;
 	width: 38px;
 	padding: 0;
 }
 
 .table-wrapper tr.clicked {
-	color: #e45756;
+	color: #0fa0ce;
 	font-weight: bold;
 }
 
@@ -185,6 +186,11 @@ section:first-child {
 
 .table-wrapper th a {
 	cursor: pointer;
+	color: #222;
+}
+
+.table-wrapper th a:hover {
+	color: #0fa0ce;
 }
 
 .tstep-button {
@@ -202,6 +208,11 @@ section:first-child {
 .button-icon {
 	height: 15px;
 	color: white;
+}
+
+#target-row canvas {
+	display: block;
+	margin: 0 auto;
 }
 
 /* Color legend unordered list business */

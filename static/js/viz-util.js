@@ -36,12 +36,26 @@ function updateEmbed(specPath, dataURL, specID, chartWidth, hideLegend) {
 	$.getJSON(specPath, function(spec) {
 		spec.width = chartWidth;
 		spec.data[0].url = dataURL;
+		if (spec.data.length > 1 && spec.data[1].name === 'edges') {
+			spec.data[1].url = dataURL;
+		}
 		if (hideLegend) {
 			delete spec.legends;
 		}
 
-		vega.embed(specID, spec, {}, function(error, result) {
-			if (error) throw error;
+		var opt = {
+			'actions': { 'export': false, 'source': false, 'editor': false },
+			'config': {
+				'range': {
+					'category': {
+						'scheme': 'set2'
+					}
+				}
+			}
+		};
+
+		vega.embed(specID, spec, opt, function(error, result) {
+			if (error) { console.error(error); };
 		});
 	});
 }
@@ -175,8 +189,8 @@ function updateTable(dataURL, tableTemplID, tableID, g, sigmaID) {
 			updateGraphTable(g, $tstepButton, sigmaID);
 		}
 		else if (window.viewType === 'tc') {
-			var $parentRow = $('.js--row-button').first().parents('tr');
-			updateGraphsTable(g, $parentRow);
+			var $rowButton = $('.js--row-button').first();
+			updateGraphsTable(g, $rowButton);
 		}
 	});
 }

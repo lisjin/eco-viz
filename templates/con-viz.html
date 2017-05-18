@@ -30,9 +30,9 @@
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
 
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega/3.0.0-beta.25/vega.min.js"></script>
+	<script type="text/javascript" src="//vega.github.io/vega/vega.js"></script>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
-	<script type="text/javascript" src="//vega.github.io/vega-embed/vega-embed.min.js"></script>
+	<script type="text/javascript" src="//vega.github.io/vega-embed/vega-embed.js"></script>
 
 	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
 
@@ -48,7 +48,7 @@
 
 <!-- Primary Page Layout
 –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-<div class="container">
+<div class="container {{ 'wide' if not connectome else '' }}">
 	{% block mode_button %}
 	<div class="two columns offset-by-ten">
 		{% set other_mode = 2 if dropdown_mode == 1 else 1 %}
@@ -153,7 +153,7 @@
 	</div>
 	<section class="no-top">
 		<div class="row">
-			<h6 class="centered header-upper">2. Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal, while the latter two denote the spatial structure. Hover over the slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">Summary item proportion <span class="subtext">by structure type</span><span class="tooltip"><a data-balloon="The first character denotes temporal, while the latter two denote the spatial structure. Hover over the slices to show percentages." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
@@ -166,7 +166,7 @@
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">3. Node count <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Median and spread of structure participation can be inferred from the chart's shape. Hover over the bars to show node counts." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">Node count <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Median and spread of structure participation can be inferred from the chart's shape. Hover over the bars to show node counts." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
@@ -179,7 +179,7 @@
 	</section>
 	<section>
 		<div class="row">
-			<h6 class="centered header-upper">4. Top 10 node IDs <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Numbers on the y-axis denote node ID. The bar chart is sorted by average structure participation of nodes grouped by region." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">Top 10 node IDs <span class="subtext">by structure participation count</span><span class="tooltip"><a data-balloon="Numbers on the y-axis denote node ID. The bar chart is sorted by average structure participation of nodes grouped by region." data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row">
 			<div class="one-half column">
@@ -193,7 +193,7 @@
 	<section>
 		{% block graph_header %}
 		<div class="row">
-			<h6 class="centered header-upper">{% if connectome %}5. {% else %}2. {% endif %}Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired time step under 'Time step(s)' column of table below to toggle graph visualization. (First time step of first structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired {{'time step' if connectome else 'row'}} under '{{ 'Time step(s)' if connnectome else 'View' }}' column of table below to toggle graph visualization. (First {% if connectome %}time step of first {% endif %}structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row color-legend">
 			<ul class="one column offset-by-two"><li data-type="dan">DAN</li></ul>

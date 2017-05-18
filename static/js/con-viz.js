@@ -95,10 +95,10 @@ function tcInputListener() {
 
 // Update graph visualizations based on content of clicked time step button
 function tstepButtonListener() {
+	var suffix = window.dropdownMode === 2 ? '2' : '';
+	var g = getGraphParams(suffix);
 	var $tstepButton = $(this);
 	var sigmaID = $(this).parents('table').is('#tc-table') ? 'graph' : 'graph2';
-	var suffix = sigmaID.indexOf('2') > -1 ? '2' : '';
-	var g = getGraphParams(suffix);
 
 	// For single-column dropdown menu, set the left column as 'Rest' and right as 'Mindful Rest'
 	if (window.dropdownMode === 1) {
