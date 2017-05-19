@@ -195,9 +195,9 @@
 		<div class="row">
 			<h6 class="centered header-upper">Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired {{'time step' if connectome else 'row'}} under '{{ 'Time step(s)' if connnectome else 'View' }}' column of table below to toggle graph visualization. (First {% if connectome %}time step of first {% endif %}structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
-		{% endblock %}
 		<div class="row color-legend js--color-legend">
 		</div>
+		{% endblock %}
 		<div class="row">
 			<div class="one-half column">
 				<div id="graph" class="graph-container"></div>
