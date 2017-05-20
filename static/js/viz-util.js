@@ -219,7 +219,7 @@ function getYAvgVals(sortedNodes, staticStrucName, splitStart) {
 	var yLeftAvg = 0;
 	var yRightAvg = 0;
 
-	if (staticStrucName === 'bc') {
+	if (staticStrucName === 'bc' || staticStrucName === 'nb') {
 		sortedNodes.forEach(function(node, i, a) {
 			yLeftAvg += (i < splitStart) ? i / splitStart : 0;
 			yRightAvg += (i >= splitStart) ? (i - splitStart) / (a.length - splitStart) : 0;
@@ -272,7 +272,7 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
 
 		sortedNodes.forEach(function(node, i, a) {
-			if (staticStrucName === 'bc') {
+			if (staticStrucName === 'bc' || staticStrucName === 'nb') {
 				// Initialize node's position in a vertical line on left or right side
 				node.x = (i < splitStart) ? 0 : 1;
 				node.y = (i < splitStart) ? (i / splitStart) - yAvgVals.left
