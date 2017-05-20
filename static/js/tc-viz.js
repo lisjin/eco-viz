@@ -13,7 +13,6 @@ function tcInputListener() {
 	var g = getGraphParams('');
 	var TCDataURL = constructTCDataURL(g);
 	var tstepsDataURL = constructTstepsDataURL(g, '');
-	var traverseDataURL = constructTraverseDataURL(g, '9', '0');
 
 	updateEmbed('static/specs/spec_v0.json', tstepsDataURL, '#view0', 700, true);
 	updateTable(TCDataURL, 'tc-table-template', 'tc-table', g, 'graph');
@@ -111,7 +110,7 @@ function updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps) {
 	});
 }
 
-// Update graph visualization, ticker below, and state of time step button clicked
+// Update graph visualization, ticker below, and state of row button clicked
 function updateGraphsTable(g, $rowButton) {
 	var $parentRow = $rowButton.parents('tr');
 
@@ -131,7 +130,7 @@ function updateGraphsTable(g, $rowButton) {
 	}
 }
 
-// Update graph visualizations based on content of clicked time step button
+// Update graph visualizations based on content of clicked row button
 function rowButtonListener() {
 	var g = getGraphParams('');
 	var $rowButton = $(this);

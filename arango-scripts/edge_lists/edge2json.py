@@ -17,8 +17,8 @@ for filename in os.listdir(INPUT_DIR):
 			edge = {}
 			src = line.split()[0]
 			dest = line.split()[1]
-			edge['_from'] = PREF + '_nodes' + '/' + 'n' + src
-			edge['_to'] = PREF + '_nodes' + '/' + 'n' + dest
+			edge['_from'] = PREF + '_nodes/n' + src
+			edge['_to'] = PREF + '_nodes/n' + dest
 			edge['id'] = 'e' + str(idx)
 			edge['tstep'] = tstep
 			edges.append(edge)

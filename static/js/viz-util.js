@@ -271,7 +271,6 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
 		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
 
-		var regionSet = new Set();
 		sortedNodes.forEach(function(node, i, a) {
 			if (staticStrucName === 'bc') {
 				// Initialize node's position in a vertical line on left or right side
@@ -289,12 +288,10 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 			node.size = s.graph.degree(node.id);
 			node.color = vega.scheme('tableau10')[window.regionIndexMap[node.region]];
 
-			if (updateLegend) {
-				regionSet.add(node.region);
-			}
 		});
 
 		if (updateLegend) {
+			var regionSet = new Set(['DAN', 'DMN', 'FPN', 'LN', 'SMN', 'VAN', 'VN', '']);
 			updateColorLegend(regionSet, true);
 		}
 

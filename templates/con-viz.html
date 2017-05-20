@@ -193,9 +193,19 @@
 	<section>
 		{% block graph_header %}
 		<div class="row">
-			<h6 class="centered header-upper">Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button for desired {{'time step' if connectome else 'row'}} under '{{ 'Time step(s)' if connnectome else 'View' }}' column of table below to toggle graph visualization. (First {% if connectome %}time step of first {% endif %}structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
+			<h6 class="centered header-upper">Graph viz &amp; full TimeCrunch summary<span class="tooltip"><a data-balloon="Click button under '{{ 'Time step(s)' if connectome else 'Graphs\' or \'Matrices' }}' column of table for desired {{'time step' if connectome else 'row'}} to toggle visualization. (First {% if connectome %}time step of first {% endif %}structure is automatically shown.)" data-balloon-pos="up" data-balloon-length="xlarge"><img src="{{ url_for('static', filename='images/tooltip.svg') }}" class="tooltip-icon"></a></span></h6>
 		</div>
 		<div class="row color-legend js--color-legend">
+			{% if connectome %}
+			<ul class="one column offset-by-two"><li><span style="color: #bab0ac;">&block;</span> N/A</li></ul>
+			<ul class="one column"><li><span style="color: #4c78a8;">&block;</span> DAN</li></ul>
+			<ul class="one column"><li><span style="color: #f58518;">&block;</span> DMN</li></ul>
+			<ul class="one column"><li><span style="color: #e45756;">&block;</span> FPN</li></ul>
+			<ul class="one column"><li><span style="color: #72b7b2;">&block;</span> LN</li></ul>
+			<ul class="one column"><li><span style="color: #54a24b;">&block;</span> SMN</li></ul>
+			<ul class="one column"><li><span style="color: #eeca3b;">&block;</span> VAN</li></ul>
+			<ul class="one column"><li><span style="color: #b279a2;">&block;</span> VN</li></ul>
+			{% endif %}
 		</div>
 		{% endblock %}
 		<div class="row">
