@@ -8,10 +8,7 @@ api = Blueprint('api', __name__, template_folder='templates')
 
 
 def get_region(node_id):
-	for region, node_set in comps.iteritems():
-		if node_id in node_set:
-			return region
-	return ''
+	return comps[node_id] if node_id in comps else ''
 
 
 def parse_node_id(node_str):
@@ -43,7 +40,7 @@ def construct_tc_query(parts):
 	return 'data/' + parts[0] + '/' + parts[0] + '_' + parts[1] + '+0.' + parts[2][1:] + '-' + parts[3] + '.json'
 
 
-def get_traversal_edges(nodes, graph_name, nodes_str, tstep):
+def get_traversal_results(nodes, graph_name, nodes_str, tstep):
 	all_edges = []
 	for node in nodes:
 		traversal_results = db.graph(graph_name).traverse(
@@ -76,7 +73,7 @@ def traverse_route(graph_name):
 	nodes_str = ', '.join(['\"' + graph_name + '_nodes/n' + n + '\"' for n in nodes])
 
 	all_nodes = [{'id': int(node), 'label': node, 'region': get_region(int(node))} for node in nodes]
-	all_edges = get_traversal_edges(nodes, graph_name, nodes_str, tstep)
+	all_edges = get_traversal_results(nodes, graph_name, nodes_str, tstep)
 	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
 
