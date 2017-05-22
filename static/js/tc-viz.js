@@ -71,7 +71,7 @@ function updateGraphs(g, strucIndex, strucName, splitStart, timeSteps) {
 function updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps) {
 	var tickerHTML = Mustache.render($('#ticker-template').html(), {
 		'struc_name': strucName,
-		'struc_index': strucIndex
+		'struc_index': strucIndex + 1
 	});
 	$(tickerHTML).appendTo('#target-row');
 
