@@ -20,24 +20,24 @@
 
 	<!-- CSS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<link href="//cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.css" rel="stylesheet" type="text/css">
-	<link href="//cdnjs.cloudflare.com/ajax/libs/balloon-css/0.2.4/balloon.min.css" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/skeleton.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ url_for('static', filename='css/balloon.min.css') }}" rel="stylesheet" type="text/css">
 
 	<link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
 
 	<!-- JS
 	–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/2.3.0/mustache.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/mustache.min.js') }}"></script>
 
-	<script type="text/javascript" src="//vega.github.io/vega/vega.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/vega-lite/2.0.0-alpha.7/vega-lite.js"></script>
-	<script type="text/javascript" src="//vega.github.io/vega-embed/vega-embed.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/vega/vega.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/vega/vega-lite.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/vega/vega-embed.min.js') }}"></script>
 
-	<script type="text/javascript" src="//d3js.org/d3.v4.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/d3.v4.min.js') }}"></script>
 
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/sigma.min.js"></script>
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/sigma.js/1.2.0/plugins/sigma.parsers.json.min.js"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/sigma/sigma.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/sigma/sigma.parsers.json.min.js') }}"></script>
 
 	{% block js %}
 	<script type="text/javascript" src="{{ url_for('static', filename='js/con-viz.js') }}" defer></script>
