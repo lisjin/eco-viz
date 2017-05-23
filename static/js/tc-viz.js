@@ -60,7 +60,7 @@ function updateGraphs(g, strucIndex, strucName, splitStart, timeSteps) {
 		$(this).find('.js--graph-wrapper .graph-container').each(function(i, val) {
 			var graphID = $(this).attr('id');
 			var tstep = graphID.match(/\d+/g)[0];
-			var dataURL = constructTraverseDataURL(g, tstep, strucIndex);
+			var dataURL = constructTraverseDataURL(g, tstep, strucIndex, splitStart);
 
 			var updateLegend = (i === 0);
 			updateSigma(dataURL, graphID, strucName, splitStart, updateLegend);
@@ -68,12 +68,14 @@ function updateGraphs(g, strucIndex, strucName, splitStart, timeSteps) {
 	});
 }
 
-function updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps) {
+function updateMatrices(g, strucIndex, strucName, splitStart, $parentRow, timeSteps) {
 	var tickerHTML = Mustache.render($('#ticker-template').html(), {
 		'struc_name': strucName,
 		'struc_index': strucIndex + 1
 	});
 	$(tickerHTML).appendTo('#target-row');
+
+	console.log(splitStart);
 
 	var numNodes = parseInt($parentRow.attr('data-num-nodes'));
 	var numCols = numNodes > 50 ? 1 : (numNodes > 30 ? 2 : 3);
@@ -92,7 +94,7 @@ function updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps) {
 			'el_id': elID,
 			'tstep': tstep
 		});
-		var traverseDataURL = constructTraverseDataURL(g, tstep, strucIndex);
+		var traverseDataURL = constructTraverseDataURL(g, tstep, strucIndex, splitStart);
 
 		if (i === 0) {
 			$.getJSON(traverseDataURL, function(data) {
@@ -126,7 +128,7 @@ function updateGraphsTable(g, $rowButton) {
 		updateGraphs(g, strucIndex, strucName, splitStart, timeSteps);
 	}
 	else if ($rowButton.hasClass('matrix-button')) {
-		updateMatrices(g, strucIndex, strucName, $parentRow, timeSteps);
+		updateMatrices(g, strucIndex, strucName, splitStart, $parentRow, timeSteps);
 	}
 }
 

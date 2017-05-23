@@ -15,16 +15,21 @@ def parse_node_id(node_str):
 	return int(re.findall('\/n\d+', node_str)[0][2:])
 
 
-def parse_traversal_results(traversal_results):
-	return [
-		{
-			'source': parse_node_id(path['edges'][0]['_from']),
-			'target': parse_node_id(path['edges'][0]['_to']),
+def parse_traversal_results(traversal_results, split_start):
+	results = []
+	for path in traversal_results['paths']:
+		id_pref = ''
+		source = parse_node_id(path['edges'][0]['_from'])
+		target = parse_node_id(path['edges'][0]['_to'])
+		if split_start:
+			id_pref = 'L' if source < int(split_start) or target < int(split_start) else 'R'
+		results.append({
+			'source': source,
+			'target': target,
 			'tstep': int(path['edges'][0]['tstep']),
-			'id': path['edges'][0]['tstep'] + '_' + re.findall('\d+', path['edges'][0]['id'])[0]
-		}
-		for path in traversal_results['paths']
-	]
+			'id': id_pref + path['edges'][0]['tstep'] + '_' + re.findall('\d+', path['edges'][0]['id'])[0]
+		})
+	return results
 
 
 def get_tsteps_count(graph_name, r_type):
@@ -40,7 +45,7 @@ def construct_tc_query(parts):
 	return 'data/' + parts[0] + '/' + parts[0] + '_' + parts[1] + '+0.' + parts[2][1:] + '-' + parts[3] + '.json'
 
 
-def get_traversal_results(nodes, graph_name, nodes_str, tstep):
+def get_traversal_results(nodes, graph_name, nodes_str, tstep, split_start):
 	all_edges = []
 	for node in nodes:
 		traversal_results = db.graph(graph_name).traverse(
@@ -58,7 +63,7 @@ def get_traversal_results(nodes, graph_name, nodes_str, tstep):
 				return;
 			""" % (nodes_str, tstep)
 		)
-		all_edges += parse_traversal_results(traversal_results)
+		all_edges += parse_traversal_results(traversal_results, split_start)
 	return all_edges
 
 
@@ -66,6 +71,7 @@ def get_traversal_results(nodes, graph_name, nodes_str, tstep):
 def traverse_route(graph_name):
 	tstep = request.args.get('tstep')
 	struc = int(request.args.get('struc'))
+	split_start = request.args.get('split_start')
 
 	parts = graph_name.split('_')
 	response = json.loads(requests.get(request.url_root + construct_tc_query(parts)).text)
@@ -73,7 +79,7 @@ def traverse_route(graph_name):
 	nodes_str = ', '.join(['\"' + graph_name + '_nodes/n' + n + '\"' for n in nodes])
 
 	all_nodes = [{'id': int(node), 'label': node, 'region': get_region(int(node))} for node in nodes]
-	all_edges = get_traversal_results(nodes, graph_name, nodes_str, tstep)
+	all_edges = get_traversal_results(nodes, graph_name, nodes_str, tstep, split_start)
 	return jsonify({'nodes': all_nodes, 'edges': all_edges})
 
 

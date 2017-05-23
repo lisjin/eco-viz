@@ -160,9 +160,9 @@ function expandRangedTsteps(data) {
 }
 
 // Construct the API graph traversal URL
-function constructTraverseDataURL(g, tstepChoice, strucIndex) {
+function constructTraverseDataURL(g, tstepChoice, strucIndex, splitStart) {
 	return 'api/traverse/' + g.subject + '_' + g.state + '_' + g.thresh.toString().replace('.', '') +
-	'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex;
+	'_' + g.tstep + '?tstep=' + tstepChoice + '&struc=' + strucIndex + '&split_start=' + splitStart;
 }
 
 // Construct the TimeCrunch data URL
