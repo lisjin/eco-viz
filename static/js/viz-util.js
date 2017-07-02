@@ -204,8 +204,10 @@ function updateTable(dataURL, tableTemplID, tableID, g, sigmaID) {
 // Comparator used to sort nodes first by region, then by ID
 function regionCircleCompare(a, b) {
 	var separator = window.numNodes * 10;
-	var aMappedID = window.regionIndexMap[a.region] * separator + parseInt(a.id);
-	var bMappedID = window.regionIndexMap[b.region] * separator + parseInt(b.id);
+	var aSift = typeof(a.x) !== 'undefined' ? a.x * Math.pow(separator, 2) : 0;
+	var bSift = typeof(b.x) !== 'undefined' ? b.x * Math.pow(separator, 2) : 0;
+	var aMappedID = aSift + window.regionIndexMap[a.region] * separator + parseInt(a.id);
+	var bMappedID = bSift + window.regionIndexMap[b.region] * separator + parseInt(b.id);
 
 	if (aMappedID < bMappedID)
 		return -1;
@@ -251,6 +253,14 @@ function updateColorLegend(regionSet, isGraph) {
 	$(colorLegendHTML).appendTo('.js--color-legend');
 }
 
+function nodesOnSameSide(sortedNodes, sourceID, targetID) {
+	var matches = sortedNodes.filter(function(node) {
+		return node.id === sourceID || node.id === targetID;
+	});
+
+	return matches[0].x === matches[1].x;
+}
+
 // Update the sigma instance located in sigmaID with new dataURL source for graph
 function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 	$('#' + sigmaID).empty();
@@ -268,27 +278,41 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 
 	sigma.parsers.json(dataURL, s, function(s) {
 		var staticStrucName = strucName.substring(1);
+
+		s.graph.nodes().forEach(function(node, i, a) {
+			node.size = s.graph.degree(node.id);
+			node.color = vega.scheme('tableau10')[window.regionIndexMap[node.region]];
+
+			if (staticStrucName === 'bc' || staticStrucName === 'nb') {
+				// Initialize node's position on left or right side
+				// NOTE: x-axis depends on initial node ordering
+				node.x = (i < splitStart) ? 0 : 1;
+			}
+		});
+
 		var sortedNodes = s.graph.nodes().sort(regionCircleCompare);
 		var yAvgVals = getYAvgVals(sortedNodes, staticStrucName, splitStart);
-
 		sortedNodes.forEach(function(node, i, a) {
-			if (staticStrucName === 'bc' || staticStrucName === 'nb') {
-				// Initialize node's position in a vertical line on left or right side
-				node.x = (i < splitStart) ? 0 : 1;
-				node.y = (i < splitStart) ? (i / splitStart) - yAvgVals.left
-					: (i - splitStart) / (a.length - splitStart) - yAvgVals.right;
-			}
-			else if (staticStrucName === 'fc') {
+			if (staticStrucName === 'fc') {
 				// Initialize node's position to point along a circle
 				node.x = Math.cos(Math.PI * 2 * i / a.length);
 				node.y = Math.sin(Math.PI * 2 * i / a.length);
 			}
 
-			// Update node's size and color based on its degree and brain region, respectively
-			node.size = s.graph.degree(node.id);
-			node.color = vega.scheme('tableau10')[window.regionIndexMap[node.region]];
-
+			else if (staticStrucName === 'bc' || staticStrucName === 'nb') {
+				// Initialize node's position in a vertical line
+				node.y = (i < splitStart) ? (i / splitStart) - yAvgVals.left
+					: (i - splitStart) / (a.length - splitStart) - yAvgVals.right;
+			}
 		});
+
+		if (staticStrucName === 'bc' || staticStrucName === 'nb') {
+			s.graph.edges().forEach(function(edge, i, a) {
+				if (nodesOnSameSide(sortedNodes, edge.source, edge.target)) {
+					edge.type = 'curve';
+				}
+			});
+		}
 
 		if (updateLegend) {
 			var regionSet = new Set(['DAN', 'DMN', 'FPN', 'LN', 'SMN', 'VAN', 'VN', '']);
