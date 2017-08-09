@@ -72,4 +72,4 @@ def send_data(path):
 	elif req_type == 'node_distr2':
 		nodes_flat = get_nodes(entry, False)
 		return json.dumps(sorted(nodes_flat, key=lambda k: k['amount'], reverse=True))
-	return jsonify(entry)
+	return json.dumps(entry)

@@ -89,4 +89,4 @@ def timesteps_route(graph_name):
 
 	c = get_tsteps_count(graph_name, r_type)
 	results = [r for r in c]
-	return jsonify(results)
+	return json.dumps(results)

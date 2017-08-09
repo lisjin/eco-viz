@@ -261,6 +261,10 @@ function nodesOnSameSide(sortedNodes, sourceID, targetID) {
 	return matches[0].x === matches[1].x;
 }
 
+function average(dataArr) {
+	return dataArr.reduce((a, b) => a + b) / dataArr.length;
+}
+
 // Update the sigma instance located in sigmaID with new dataURL source for graph
 function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 	$('#' + sigmaID).empty();
@@ -305,14 +309,14 @@ function updateSigma(dataURL, sigmaID, strucName, splitStart, updateLegend) {
 					: (i - splitStart) / (a.length - splitStart) - yAvgVals.right;
 			}
 		});
-
-		if (staticStrucName === 'bc' || staticStrucName === 'nb') {
-			s.graph.edges().forEach(function(edge, i, a) {
+		
+		s.graph.edges().forEach(function(edge, i, a) {
+			if (staticStrucName === 'bc' || staticStrucName === 'nb') {
 				if (nodesOnSameSide(sortedNodes, edge.source, edge.target)) {
 					edge.type = 'curve';
 				}
-			});
-		}
+			}
+		});
 
 		if (updateLegend) {
 			var regionSet = new Set(['DAN', 'DMN', 'FPN', 'LN', 'SMN', 'VAN', 'VN', '']);

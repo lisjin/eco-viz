@@ -43,7 +43,6 @@ def calc_entropy(comp_dict_cur, comp_dict_counts):
 	entropy = float(0)
 	for k, v in comp_dict_cur.iteritems():
 		# Compute entropy relative to maximum entropy, which is based on # of total outcomes
-		p = v / total_orig
 		q = comp_dict_cur[k] / total_cur
 		entropy += q * math.log(q, NUM_COMPONENTS)
 	return -1 * entropy
