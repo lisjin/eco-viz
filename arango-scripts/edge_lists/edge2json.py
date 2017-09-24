@@ -28,7 +28,7 @@ with open(PREF + '_edges.json', 'w') as edge_outf:
 	edge_outf.write(unicode(json.dumps(edges, indent=4, separators=(',', ': '))))
 edge_outf.close()
 
-# with open('nodes.json', 'w') as node_outf:
-# 	node_outf.write(unicode(json.dumps(
-# 		[{'_key': 'n' + str(n), 'value': str(n)} for n in range(1, 101)], indent=4, separators=(',', ': '))))
-# node_outf.close()
+with open('nodes.json', 'w') as node_outf:
+	node_outf.write(unicode(json.dumps(
+		[{'_key': 'n' + str(n), 'value': str(n)} for n in range(1, 101)], indent=4, separators=(',', ': '))))
+node_outf.close()
